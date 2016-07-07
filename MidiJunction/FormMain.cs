@@ -48,7 +48,7 @@ namespace MidiJunction
     {
       InitializeComponent();
 
-      _config.Updated += (sender, args) => FormMain_Load(this, EventArgs.Empty);
+      _config.Updated += OnConfigUpdated;
 
       _formSettings = new FormSettings(_config);
       _formTools = new FormTools();
@@ -76,20 +76,32 @@ namespace MidiJunction
       RegisterAppBar();
     }
 
+    private void OnConfigUpdated(object sender, EventArgs args)
+    {
+      FormMain_Load(this, EventArgs.Empty);
+    }
+
     private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
     {
+      MidiDeviceManager.Shutdown();
       timer1.Enabled = false;
       _closing = true;
+      _config.Updated -= OnConfigUpdated;
+
+      _formSettings.Close();
+      _formTools.Close();
+      _formKeyboard.Close();
+
+      for (var i = 0; i < 10; i++)
+      {
+        Application.DoEvents();
+        Thread.Sleep(10);
+      }
     }
 
     private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
     {
       UnregisterAppBar();
-
-      _formSettings.Dispose();
-      _formTools.Dispose();
-
-      MidiDeviceManager.Shutdown();
     }
 
     private void FormMain_KeyDown(object sender, KeyEventArgs e)

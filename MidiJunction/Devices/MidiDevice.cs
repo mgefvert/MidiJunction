@@ -22,6 +22,7 @@ namespace MidiJunction.Devices
     public int Id { get; }
     public string Name { get; }
     public event MidiMessageHandler Message;
+    protected bool Closing;
 
     protected MidiDevice(int device, string name)
     {
@@ -39,7 +40,8 @@ namespace MidiJunction.Devices
 
     protected void MidiHandler(int handle, int msg, int instance, int param1, int param2)
     {
-      Message?.Invoke(this, new MidiMessageEventArgs(handle, new MidiMessage((uint)param1)));
+      if (!Closing)
+        Message?.Invoke(this, new MidiMessageEventArgs(handle, new MidiMessage((uint)param1)));
     }
   }
 }

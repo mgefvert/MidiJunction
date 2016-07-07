@@ -17,6 +17,8 @@ namespace MidiJunction.Devices
 
     public override void Dispose()
     {
+      Closing = true;
+      WinMM.midiInStop(_handle);
       WinMM.midiInClose(_handle);
     }
   }

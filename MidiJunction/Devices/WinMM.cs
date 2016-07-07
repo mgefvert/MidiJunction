@@ -128,6 +128,8 @@ namespace MidiJunction.Devices
     public static extern MMRESULT midiInReset(IntPtr hMidiIn);
     [DllImport("winmm.dll", SetLastError = true)]
     public static extern MMRESULT midiInStart(IntPtr hMidiIn);
+    [DllImport("winmm.dll", SetLastError = true)]
+    public static extern MMRESULT midiInStop(IntPtr hMidiIn);
     [DllImport("winmm.dll")]
     public static extern MMRESULT midiOutClose(IntPtr hMidiOut);
     [DllImport("winmm.dll", SetLastError = true)]
