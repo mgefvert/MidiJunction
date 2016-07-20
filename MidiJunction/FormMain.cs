@@ -154,9 +154,10 @@ namespace MidiJunction
     private void InDeviceOnMessage(object sender, MidiMessageEventArgs args)
     {
       var msg = args.Message;
-      var any = false;
+      var origChannel = msg.Channel;
 
       // Start by outputting the data - as low latency as possible
+      var any = false;
       if (msg.Channel + 1 == CurrentChannel)
         foreach (var info in _buttons.Where(x => x.Active))
         {
@@ -166,8 +167,7 @@ namespace MidiJunction
         }
 
       // Update UI
-      _buttons[msg.Channel].Opacity = 100;
-      _buttons[msg.Channel].MidiLabel.BackColor = Color.Chartreuse;
+      HighlightChannel(origChannel);
 
       if (any)
       {
@@ -186,6 +186,14 @@ namespace MidiJunction
 
       // Tick
       Invoke((Action)delegate { timer1_Tick(this, EventArgs.Empty); });
+    }
+
+    private void HighlightChannel(int channel)
+    {
+      var button = _buttons[channel];
+
+      button.Opacity = 100;
+      button.MidiLabel.BackColor = Color.Chartreuse;
     }
 
     private void RecolorButtons()
