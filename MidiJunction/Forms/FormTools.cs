@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using MidiJunction.Devices;
 
-namespace MidiJunction
+namespace MidiJunction.Forms
 {
   public partial class FormTools : Form
   {

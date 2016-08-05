@@ -47,69 +47,92 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WinApi.cs" />
     <Compile Include="AppBar.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ConfigButton.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Controls\MidiBus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MidiBus.Designer.cs">
+      <DependentUpon>MidiBus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Devices\DeviceManager.cs" />
-    <Compile Include="Devices\NullOutputDevice.cs" />
-    <Compile Include="Devices\NullInputDevice.cs" />
-    <Compile Include="Devices\IMidiOutput.cs" />
-    <Compile Include="Devices\IMidiInput.cs" />
     <Compile Include="Devices\SystemVolume.cs" />
-    <Compile Include="FormKeyboard.cs">
+    <Compile Include="Forms\FormKeyboard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormKeyboard.Designer.cs">
+    <Compile Include="Forms\FormKeyboard.Designer.cs">
       <DependentUpon>FormKeyboard.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Devices\MidiMessage.cs" />
-    <Compile Include="Devices\MidiDeviceOut.cs" />
     <Compile Include="Devices\MidiDeviceIn.cs" />
     <Compile Include="Devices\MidiDevice.cs" />
-    <Compile Include="Devices\Midi.cs" />
-    <Compile Include="FormSettings.cs">
+    <Compile Include="Forms\FormSettingButton.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSettings.Designer.cs">
+    <Compile Include="Forms\FormSettingButton.Designer.cs">
+      <DependentUpon>FormSettingButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSettingDevice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSettingDevice.Designer.cs">
+      <DependentUpon>FormSettingDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTools.cs">
+    <Compile Include="Forms\FormTools.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTools.Designer.cs">
+    <Compile Include="Forms\FormTools.Designer.cs">
       <DependentUpon>FormTools.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
-    <Compile Include="Piano.cs">
+    <Compile Include="Controls\Piano.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Piano.Designer.cs">
+    <Compile Include="Controls\Piano.Designer.cs">
       <DependentUpon>Piano.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Devices\VirtualMidi.cs" />
     <Compile Include="Devices\WinMM.cs" />
-    <EmbeddedResource Include="FormKeyboard.resx">
+    <EmbeddedResource Include="Controls\MidiBus.resx">
+      <DependentUpon>MidiBus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormKeyboard.resx">
       <DependentUpon>FormKeyboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSettings.resx">
+    <EmbeddedResource Include="Forms\FormSettingButton.resx">
+      <DependentUpon>FormSettingButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSettingDevice.resx">
+      <DependentUpon>FormSettingDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTools.resx">
+    <EmbeddedResource Include="Forms\FormTools.resx">
       <DependentUpon>FormTools.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Piano.resx">
+    <EmbeddedResource Include="Controls\Piano.resx">
       <DependentUpon>Piano.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -137,9 +160,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="midi.ini">
+    <Content Include="Images\hamburger-icon.png" />
+    <Content Include="midi-config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <None Include="Resources\BackgroundImage.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\logo-small.png" />
@@ -154,6 +179,12 @@
     <Content Include="Images\drill.png" />
     <Content Include="Images\gear.png" />
     <Content Include="Images\piano.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Gefvert.Tools\Gefvert.Tools.Common\Gefvert.Tools.Common.csproj">
+      <Project>{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}</Project>
+      <Name>Gefvert.Tools.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
+using MidiJunction.Forms;
 
 namespace MidiJunction
 {
   static class Program
   {
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
     [STAThread]
     static void Main()
     {

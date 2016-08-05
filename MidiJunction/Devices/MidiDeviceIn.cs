@@ -2,12 +2,12 @@
 
 namespace MidiJunction.Devices
 {
-  public class MidiDeviceIn : MidiDevice, IMidiInput
+  public class MidiDeviceIn : MidiDevice
   {
     private readonly IntPtr _handle;
     private readonly WinMM.MidiCallback _callback;
 
-    internal MidiDeviceIn(int device) : base(device, Midi.InDeviceInfo(device).szPname)
+    internal MidiDeviceIn(int device) : base(device, MidiDeviceManager.InDeviceInfo(device).szPname)
     {
       _callback = MidiHandler;
 

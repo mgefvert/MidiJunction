@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using NAudio.CoreAudioApi;
 
 namespace MidiJunction.Devices
@@ -7,9 +8,14 @@ namespace MidiJunction.Devices
   {
     private readonly MMDeviceEnumerator _deviceEnumerator = new MMDeviceEnumerator();
     private readonly MMDevice _playbackDevice;
+    private readonly Timer _timer;
+    
+    public float? TargetVolume { get; set; }
 
     public SystemVolume()
     {
+      _timer = new Timer(TimerCallback, null, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(50));
+
       try
       {
         _playbackDevice = _deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
@@ -20,11 +26,32 @@ namespace MidiJunction.Devices
       }
     }
 
-    public int GetVolume()
+    private void TimerCallback(object state)
+    {
+      if (TargetVolume == null)
+        return;
+
+      var c = GetVolume();
+      var diff = TargetVolume.Value - c;
+
+      var change = Math.Min(2, Math.Abs(diff));
+      if (change < 0.1)
+      {
+        TargetVolume = null;
+        return;
+      }
+
+      if (c > TargetVolume)
+        change = -change;
+
+      SetVolume(c + change);
+    }
+
+    public float GetVolume()
     {
       try
       {
-        return (int)(_playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar * 100);
+        return _playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar * 100;
       }
       catch
       {
@@ -32,7 +59,7 @@ namespace MidiJunction.Devices
       }
     }
 
-    public void SetVolume(int volume)
+    public void SetVolume(float volume)
     {
       var v = volume / 100.0 + 0.00001;
 
@@ -46,14 +73,14 @@ namespace MidiJunction.Devices
 
     public void Increase10()
     {
-      var v = GetVolume() + 2;
-      SetVolume((v / 10 + 1) * 10);
+      var v = (int)(TargetVolume ?? GetVolume()) + 2;
+      TargetVolume = Math.Min((v / 10 + 1) * 10, 100);
     }
 
     public void Decrease10()
     {
-      var v = GetVolume() + 2;
-      SetVolume((v / 10 - 1) * 10);
+      var v = (int)(TargetVolume ?? GetVolume()) + 2;
+      TargetVolume = Math.Max((v / 10 - 1) * 10, 0);
     }
   }
 }

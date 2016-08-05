@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using Gefvert.Tools.Common;
 
 namespace MidiJunction
 {
@@ -8,79 +10,89 @@ namespace MidiJunction
   {
     private readonly string _filename;
 
-    public string MidiInputDevice { get; set; }
-    public string MidiOutputName { get; set; }
-    public string[] Channels { get; }
-    public int MidiDefaultChannel { get; set; }
-    public int BreakAfter { get; set; }
+    public string InputDevice { get; set; }
+    public List<string> OutputDevices { get; } = new List<string>();
+    public List<ConfigButton> Buttons { get; } = new List<ConfigButton>();
+    public int DefaultChannel { get; set; }
+    public List<int> BreakAfter { get; } = new List<int>();
 
     public event EventHandler Updated;
 
     public Config(string filename)
     {
-      Channels = new string[16];
+      InputDevice = null;
+      OutputDevices.Add("MIDI Junction");
+      DefaultChannel = 1;
 
       _filename = filename;
       Load();
     }
 
-    private static string GetValue(Dictionary<string, string> dictionary, string key)
-    {
-      string result;
-      return dictionary.TryGetValue(key, out result) ? result.Trim() : null;
-    }
-
     public void Load()
     {
-      var lines = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+      var doc = XDocument.Load(_filename);
 
-      using (var fs = new FileStream(_filename, FileMode.OpenOrCreate))
-      using (var reader = new StreamReader(fs))
+      var xml = doc.Root;
+      if (xml == null)
+        return;
+
+      InputDevice = xml.Element("input-device")?.Value;
+
+      OutputDevices.Clear();
+      OutputDevices.AddRange(xml
+        .Elements("output-devices")
+        .Elements("device")
+        .Select(x => x.Attribute("name")?.Value)
+        .Where(x => !string.IsNullOrEmpty(x))
+      );
+
+      Buttons.Clear();
+      foreach (var node in xml.Elements("buttons").Elements("button"))
       {
-        while (!reader.EndOfStream)
-        {
-          var s = (reader.ReadLine() ?? "").Trim();
-          if (string.IsNullOrEmpty(s))
-            continue;
+        var device = node.Attribute("device")?.Value.ParseInt(-1) ?? -1;
+        var channel = node.Attribute("channel")?.Value.ParseInt(-1) ?? -1;
+        if (device == -1 || channel == -1)
+          continue;
 
-          var fields = s.Split('=');
-          if (fields.Length != 2)
-            continue;
+        var name = node.Attribute("name")?.Value;
+        if (string.IsNullOrEmpty(name))
+          name = $"D{device} Ch{channel}";
 
-          lines[fields[0].Trim()] = fields[1].Trim();
-        }
+        Buttons.Add(new ConfigButton { Device = device, Channel = channel, Name = name });
       }
 
-      for (int i = 0; i < 16; i++)
-        Channels[i] = GetValue(lines, "Channel" + (i + 1));
+      BreakAfter.Clear();
+      BreakAfter.AddRange(xml
+        .Elements("break")
+        .Elements("after")
+        .Select(x => x.Value.ParseInt())
+        .Where(x => x != 0)
+      );
 
-      MidiInputDevice = GetValue(lines, "MidiInputDevice");
-      MidiOutputName = GetValue(lines, "MidiOutputName");
-
-      int n;
-      int.TryParse(GetValue(lines, "BreakAfter"), out n);
-      BreakAfter = n;
-
-      MidiDefaultChannel = 1;
-      if (int.TryParse(GetValue(lines, "MidiDefaultChannel"), out n))
-        MidiDefaultChannel = Helper.Limit(n, 1, 16);
+      DefaultChannel = Helper.Limit(xml.Element("default-channel")?.Value.ParseInt() ?? 0, 0, 15);
     }
 
     public void Save()
     {
-      using (var fs = new FileStream(_filename, FileMode.Create))
-      using (var writer = new StreamWriter(fs))
-      {
-        writer.WriteLine("MidiInputDevice = " + MidiInputDevice);
-        writer.WriteLine("MidiOutputName = " + MidiOutputName);
-        writer.WriteLine("MidiDefaultChannel = " + MidiDefaultChannel);
-        writer.WriteLine();
+      var outputDevices = OutputDevices.Select(x => new XElement("device", new XAttribute("name", x)));
+      var buttons = Buttons.Select(x => new XElement("button",
+        new XAttribute("device", x.Device),
+        new XAttribute("channel", x.Channel),
+        new XAttribute("name", x.Name)
+      ));
+      var breaks = BreakAfter.Select(x => new XElement("after", x));
 
-        for (int i = 0; i < 16; i++)
-          writer.WriteLine("Channel" + (i + 1) + " = " + Channels[i]);
+      var doc = new XDocument(
+        new XElement("xml", 
+          new XElement("input-device", InputDevice),
+          new XElement("output-devices", outputDevices),
+          new XElement("default-channel", DefaultChannel),
+          new XElement("buttons", buttons),
+          new XElement("break", breaks)
+        )
+      );
 
-        writer.WriteLine("BreakAfter = " + BreakAfter);
-      }
+      doc.Save(_filename);
     }
 
     public void TriggerUpdated()

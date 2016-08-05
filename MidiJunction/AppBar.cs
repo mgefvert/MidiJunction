@@ -95,7 +95,7 @@ namespace MidiJunction
       Registered = false;
     }
 
-    private void ABSetPos()
+    protected void ABSetPos()
     {
       var abd = new APPBARDATA();
       abd.cbSize = Marshal.SizeOf(abd);

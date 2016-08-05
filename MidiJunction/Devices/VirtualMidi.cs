@@ -81,7 +81,7 @@ namespace MidiJunction.Devices
     }
   }
 
-  public class VirtualMidi : IMidiOutput
+  public class VirtualMidi
   {
     // ReSharper disable InconsistentNaming
 
@@ -117,18 +117,21 @@ namespace MidiJunction.Devices
     private readonly uint _maxSysexLength;
     private readonly ulong[] _readProcessIds;
 
-    public static string VersionString { get; }
-    public static string DriverVersionString { get; }
-
     public string Name { get; }
 
-    /* static initializer to retrieve version-info from DLL... */
-    static VirtualMidi()
+    public static string CheckDriverVersion()
     {
       ushort dummy = 0;
 
-      VersionString = Marshal.PtrToStringAuto(virtualMIDIGetVersion(ref dummy, ref dummy, ref dummy, ref dummy));
-      DriverVersionString = Marshal.PtrToStringAuto(virtualMIDIGetDriverVersion(ref dummy, ref dummy, ref dummy, ref dummy));
+      var versionString = Marshal.PtrToStringAuto(virtualMIDIGetVersion(ref dummy, ref dummy, ref dummy, ref dummy));
+      if (versionString == null)
+        throw new VirtualMidiException(Marshal.GetLastWin32Error());
+
+      var driverVersionString = Marshal.PtrToStringAuto(virtualMIDIGetDriverVersion(ref dummy, ref dummy, ref dummy, ref dummy));
+      if (driverVersionString == null)
+        throw new VirtualMidiException(Marshal.GetLastWin32Error());
+
+      return "VirtualMIDI version:" + versionString + " driverVersion:" + driverVersionString;
     }
 
     public VirtualMidi(string portName, uint maxSysexLength = TE_VM_DEFAULT_SYSEX_SIZE, uint flags = TE_VM_FLAGS_PARSE_RX)

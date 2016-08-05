@@ -1,4 +1,6 @@
-﻿namespace MidiJunction
+﻿using System;
+
+namespace MidiJunction.Forms
 {
     partial class FormTools
     {

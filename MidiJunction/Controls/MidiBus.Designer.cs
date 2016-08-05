@@ -1,6 +1,8 @@
-﻿namespace MidiJunction
+﻿using System;
+
+namespace MidiJunction.Controls
 {
-  partial class Piano
+  partial class MidiBus
   {
     /// <summary> 
     /// Required designer variable.
@@ -30,14 +32,17 @@
     {
       this.SuspendLayout();
       // 
-      // Piano
+      // MidiBus
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "Piano";
-      this.Size = new System.Drawing.Size(465, 161);
-      this.ResumeLayout(false);
       this.DoubleBuffered = true;
+      this.Name = "MidiBus";
+      this.Size = new System.Drawing.Size(248, 39);
+      this.LocationChanged += new System.EventHandler(this.MidiBus_LocationChanged);
+      this.SizeChanged += new System.EventHandler(this.MidiBus_SizeChanged);
+      this.ResumeLayout(false);
+
     }
 
     #endregion

@@ -1,4 +1,7 @@
-﻿namespace MidiJunction
+﻿using System;
+using MidiJunction.Controls;
+
+namespace MidiJunction.Forms
 {
   partial class FormKeyboard
   {
@@ -28,7 +31,7 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.Piano = new MidiJunction.Piano();
+      this.Piano = new Piano();
       this.SuspendLayout();
       // 
       // Piano

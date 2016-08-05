@@ -73,29 +73,9 @@ namespace MidiJunction.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CloseBox {
+        internal static System.Drawing.Bitmap hamburger_icon {
             get {
-                object obj = ResourceManager.GetObject("CloseBox", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap drill {
-            get {
-                object obj = ResourceManager.GetObject("drill", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap gear {
-            get {
-                object obj = ResourceManager.GetObject("gear", resourceCulture);
+                object obj = ResourceManager.GetObject("hamburger_icon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -126,16 +106,6 @@ namespace MidiJunction.Properties {
         internal static System.Drawing.Bitmap logo2_small {
             get {
                 object obj = ResourceManager.GetObject("logo2_small", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap piano {
-            get {
-                object obj = ResourceManager.GetObject("piano", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

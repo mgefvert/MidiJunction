@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MidiJunction
+namespace MidiJunction.Controls
 {
   public partial class Piano : UserControl
   {

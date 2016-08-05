@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace MidiJunction
+namespace MidiJunction.Forms
 {
   public partial class FormKeyboard : Form
   {
