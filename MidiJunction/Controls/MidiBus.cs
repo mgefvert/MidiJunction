@@ -9,6 +9,7 @@ namespace MidiJunction.Controls
   public partial class MidiBus : UserControl
   {
     private const string SmallFontName = "MS Reference Sans Serif";
+    private static readonly Color ActiveChannelColor = Helper.Mix(Color.DodgerBlue, Color.FromArgb(51, 51, 51), 50);
 
     private int? _activeChannel;
     private readonly byte[] _opacity = new byte[16];
@@ -81,7 +82,7 @@ namespace MidiJunction.Controls
         if (_opacity[i] == 0)
           continue;
 
-        _opacity[i] = (byte)Math.Max(0, _opacity[i] - 16);
+        _opacity[i] = (byte)Math.Max(0, _opacity[i] - 8);
         any = true;
       }
 
@@ -92,7 +93,7 @@ namespace MidiJunction.Controls
     public void TriggerChannel(int channel)
     {
       AssertChannel(channel);
-      _opacity[channel] = 255;
+      _opacity[channel] = 100;
 
       Invalidate();
     }
@@ -111,7 +112,7 @@ namespace MidiJunction.Controls
       var h2 = r.Height / 2;
       var w2 = r.Width / 2;
 
-      var rtitle = _vertical ? new RectangleF(r.X, r.Y, r.Width, h2) : new RectangleF(r.X, r.Y, w2, r.Height);
+      var rtitle = (_vertical ? new Rectangle(r.X, r.Y, r.Width, h2).Modify(0, 0, -1, -3) : new Rectangle(r.X, r.Y, w2, r.Height).Modify(0, 0, -3, -1));
       var rboxes = _vertical ? new RectangleF(r.X, r.Y + h2, r.Width, r.Height - h2) : new RectangleF(r.X + w2, r.Y, r.Width - w2, r.Height);
 
       using (var brushBackground = new SolidBrush(BackColor))
@@ -127,12 +128,18 @@ namespace MidiJunction.Controls
         var g = e.Graphics;
         {
           // Draw background
-          if (BackColor != Color.Transparent)
+          if (BackColor.A != 0)
             g.FillRectangle(brushBackground, r);
 
           // Draw title
-          if (TitleColor != Color.Transparent)
+          if (TitleColor.A == 0)
+          {
+            g.DrawRectangle(new Pen(Color.White.SetAlpha(0x40)), rtitle);
+            g.DrawRectangle(new Pen(Color.White.SetAlpha(0x20)), rtitle.Modify(2, 2, -4, -4));
+          }
+          else
             g.FillRectangle(brushTitleColor, rtitle);
+
           g.DrawString(Title, Font, brushForeground, rtitle, stringFormat);
 
           // Draw 16 little boxes
@@ -162,7 +169,7 @@ namespace MidiJunction.Controls
 
                 if (_opacity[channel] != 0 || _activeChannel == channel)
                 {
-                  var background = channel == _activeChannel ? Color.DodgerBlue : Color.Transparent;
+                  var background = channel == _activeChannel ? ActiveChannelColor : Color.FromArgb(51, 51, 51);
                   using (var brush = new SolidBrush(Helper.Mix(Color.Lime, background, _opacity[channel])))
                     g.FillRectangle(brush, box);
                 }

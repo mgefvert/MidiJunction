@@ -181,7 +181,7 @@ namespace MidiJunction.Controls
     {
       var mix = (down + 32)/160f;
       var mixinv = 1-mix;
-      var downColor = Color.FromArgb(96, 128, 255);
+      var downColor = Color.DodgerBlue;
 
       return new SolidBrush(Color.FromArgb(
         (int)(normal.R * mixinv + downColor.R * mix),

@@ -76,6 +76,7 @@ namespace MidiJunction.Forms
       this.button1.Text = "button1";
       this.button1.UseVisualStyleBackColor = false;
       this.button1.Click += new System.EventHandler(this.ChannelButtonClick);
+      this.button1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ChannelButtonMouseClick);
       // 
       // button2
       // 
@@ -177,12 +178,12 @@ namespace MidiJunction.Forms
       this.labelVolume.BackColor = System.Drawing.Color.Transparent;
       this.labelVolume.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.labelVolume.ForeColor = System.Drawing.Color.White;
-      this.labelVolume.Location = new System.Drawing.Point(1252, 38);
+      this.labelVolume.Location = new System.Drawing.Point(1254, 38);
       this.labelVolume.Name = "labelVolume";
       this.labelVolume.Size = new System.Drawing.Size(53, 30);
       this.labelVolume.TabIndex = 32;
       this.labelVolume.Text = "100";
-      this.labelVolume.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.labelVolume.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       // 
       // midiBus1
       // 
@@ -320,10 +321,10 @@ namespace MidiJunction.Forms
       // progressBar1
       // 
       this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.progressBar1.Location = new System.Drawing.Point(1261, 68);
+      this.progressBar1.Location = new System.Drawing.Point(1259, 68);
       this.progressBar1.Margin = new System.Windows.Forms.Padding(0);
       this.progressBar1.Name = "progressBar1";
-      this.progressBar1.Size = new System.Drawing.Size(38, 8);
+      this.progressBar1.Size = new System.Drawing.Size(40, 8);
       this.progressBar1.TabIndex = 33;
       this.progressBar1.Value = 30;
       // 

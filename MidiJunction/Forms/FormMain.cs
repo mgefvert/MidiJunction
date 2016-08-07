@@ -15,16 +15,19 @@ namespace MidiJunction.Forms
 {
   public partial class FormMain : AppBarForm
   {
+    private static readonly Color HotStandbyColor = Helper.Mix(Color.DodgerBlue, Color.FromArgb(51, 51, 51), 50);
+
     public class ButtonInfo
     {
       public ConfigButton Config { get; set; }
       public Button Button { get; set; }
       public Keys Key { get; set; }
       public bool Active { get; set; }
+      public bool HotStandby { get; set; }
 
       public void Recolor()
       {
-        Button.BackColor = Active ? Color.Chartreuse : Color.Transparent;
+        Button.BackColor = Active ? Color.Chartreuse : (HotStandby ? HotStandbyColor : Color.Transparent);
         Button.ForeColor = Active ? Color.Black : Color.White;
       }
     }
@@ -78,19 +81,37 @@ namespace MidiJunction.Forms
     {
       switch (e.KeyCode)
       {
+        case Keys.Space:
+          foreach(var button in _buttons.Where(x => x.HotStandby))
+            button.Button.PerformClick();
+          e.Handled = true;
+          break;
         case Keys.Escape:
           ResetAllNotes();
+          e.Handled = true;
           return;
         case Keys.Add:
           _volume.Increase10();
+          e.Handled = true;
           return;
         case Keys.Subtract:
           _volume.Decrease10();
-          return;
-        default:
-          _buttons.FirstOrDefault(x => x.Key == e.KeyCode)?.Button.PerformClick();
+          e.Handled = true;
           return;
       }
+
+      var bi = _buttons.FirstOrDefault(x => x.Key == e.KeyCode);
+      if (bi == null)
+        return;
+
+      e.Handled = true;
+      if (e.Shift)
+      {
+        bi.HotStandby = !bi.HotStandby;
+        RecolorButtons();
+      }
+      else
+        bi.Button.PerformClick();
     }
 
     private void FormMain_Load(object sender, EventArgs e)
@@ -131,6 +152,7 @@ namespace MidiJunction.Forms
         var bus = new MidiBus
         {
           Title = output,
+          TitleColor = Color.Transparent,
           ForeColor = Color.White,
           BackColor = Color.Transparent,
           Width = flowOutputDevicesPanel.Width,
@@ -146,6 +168,7 @@ namespace MidiJunction.Forms
 
       var fKey = 1;
       var keys = new List<Keys> { Keys.F1, Keys.F2, Keys.F3, Keys.F4, Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12 };
+      var first = true;
       foreach (var c in _config.Buttons)
       {
         var bi = new ButtonInfo
@@ -159,15 +182,18 @@ namespace MidiJunction.Forms
             AutoSizeMode = AutoSizeMode.GrowAndShrink,
             FlatAppearance = { BorderColor = Color.Gray, MouseOverBackColor = Color.DodgerBlue },
             TabStop = false,
-            ForeColor = Color.White
+            ForeColor = Color.White,
           },
           Config = c,
           Key = keys.ExtractFirstOrDefault(),
+          Active = first
         };
         bi.Button.Click += ChannelButtonClick;
+        bi.Button.MouseDown += ChannelButtonMouseClick;
 
         _buttons.Add(bi);
         flowButtonPanel.Controls.Add(bi.Button);
+        first = false;
       }
 
       foreach (var brk in _config.BreakAfter)
@@ -185,6 +211,7 @@ namespace MidiJunction.Forms
       Height = Math.Max(flowOutputDevicesPanel.PreferredSize.Height, flowButtonPanel.PreferredSize.Height) + border;
       ABSetPos();
 
+      RecolorButtons();
       GC.Collect();
     }
 
@@ -197,10 +224,23 @@ namespace MidiJunction.Forms
       info.Active = !info.Active;
       if (!info.Active)
       {
-        MidiDeviceManager.SendAllNotesOff(info.Config.Channel);
+        MidiDeviceManager.SendAllNotesOff(info.Config.Device, info.Config.Channel);
         _formKeyboard.Piano.ClearAllKeys();
       }
 
+      RecolorButtons();
+    }
+
+    private void ChannelButtonMouseClick(object sender, MouseEventArgs e)
+    {
+      if (e.Button != MouseButtons.Right)
+        return;
+
+      var info = _buttons.FirstOrDefault(x => x.Button == sender);
+      if (info == null)
+        return;
+
+      info.HotStandby = !info.HotStandby;
       RecolorButtons();
     }
 
@@ -242,6 +282,7 @@ namespace MidiJunction.Forms
       }
 
       // Add to FormTools
+      msg.Channel = inChannel;
       _formTools.AddMessage(msg);
 
       // Tick
@@ -256,11 +297,17 @@ namespace MidiJunction.Forms
     private void ResetAllNotes()
     {
       foreach (var button in _buttons)
+      {
         button.Active = false;
+        button.HotStandby = false;
+      }
 
       MidiDeviceManager.SendAllNotesOff();
-
       _formKeyboard.Piano.ClearAllKeys();
+
+      if (_buttons.Any())
+        _buttons.First().Active = true;
+
       RecolorButtons();
     }
 
@@ -286,6 +333,7 @@ namespace MidiJunction.Forms
       _currentChannel = channel;
       labelCurrentChannel.Text = (channel + 1).ToString();
       midiInputBus.ActiveChannel = channel;
+      midiInputBus.Invalidate();
     }
 
     private void TimerTick(object sender, EventArgs e)
@@ -298,7 +346,7 @@ namespace MidiJunction.Forms
         var ticks = DateTime.Now.Millisecond;
 
         midiInputBus.Tick();
-        foreach(var control in flowButtonPanel.Controls.OfType<MidiBus>())
+        foreach(var control in flowOutputDevicesPanel.Controls.OfType<MidiBus>())
           control.Tick();
 
         // Update volume indicator
