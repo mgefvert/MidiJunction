@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -38,7 +39,7 @@ namespace MidiJunction.Forms
     private readonly List<ButtonInfo> _buttons = new List<ButtonInfo>();
     private readonly FormKeyboard _formKeyboard;
     private readonly FormSettings _formSettings;
-    private readonly FormTools _formTools;
+    private readonly FormMessageTrace _formTracing;
     private int _currentChannel;
 
     public FormMain()
@@ -48,7 +49,7 @@ namespace MidiJunction.Forms
       _config.Updated += (sender, args) => InitializeFromConfig();
 
       _formSettings = new FormSettings(_config);
-      _formTools = new FormTools();
+      _formTracing = new FormMessageTrace();
       _formKeyboard = new FormKeyboard();
       _volume = new SystemVolume();
 
@@ -62,7 +63,7 @@ namespace MidiJunction.Forms
 
       _closing = true;
       _formSettings.Close();
-      _formTools.Close();
+      _formTracing.Close();
       _formKeyboard.Close();
 
       for (var i = 0; i < 10; i++)
@@ -283,7 +284,7 @@ namespace MidiJunction.Forms
 
       // Add to FormTools
       msg.Channel = inChannel;
-      _formTools.AddMessage(msg);
+      _formTracing.AddMessage(msg);
 
       // Tick
       Invoke((Action)delegate { TimerTick(this, EventArgs.Empty); });
@@ -393,12 +394,23 @@ namespace MidiJunction.Forms
 
     private void menuTools_Click(object sender, EventArgs e)
     {
-      _formTools.Show();
+      _formTracing.Show();
     }
 
     private void menuShowPiano_Click(object sender, EventArgs e)
     {
       _formKeyboard.Show();
+    }
+
+    private void aboutMIDIJunctionToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      using (var form = new FormAbout())
+        form.ShowDialog();
+    }
+
+    private void showOverviewToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      Process.Start("http://www.gefvert.org/site/downloads/midi-junction");
     }
   }
 }

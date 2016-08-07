@@ -52,6 +52,9 @@ namespace MidiJunction.Forms
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.menuSettings = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+      this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.showOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.aboutMIDIJunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
       this.progressBar1 = new System.Windows.Forms.ProgressBar();
       this.flowButtonPanel.SuspendLayout();
@@ -276,45 +279,69 @@ namespace MidiJunction.Forms
             this.toolStripSeparator1,
             this.menuSettings,
             this.toolStripSeparator2,
+            this.helpToolStripMenuItem,
             this.menuClose});
       this.menuHamburger.Name = "menuHamburger";
-      this.menuHamburger.Size = new System.Drawing.Size(146, 104);
+      this.menuHamburger.Size = new System.Drawing.Size(191, 148);
       // 
       // menuShowPiano
       // 
       this.menuShowPiano.Name = "menuShowPiano";
-      this.menuShowPiano.Size = new System.Drawing.Size(145, 22);
+      this.menuShowPiano.Size = new System.Drawing.Size(190, 22);
       this.menuShowPiano.Text = "Show &piano...";
       this.menuShowPiano.Click += new System.EventHandler(this.menuShowPiano_Click);
       // 
       // menuTools
       // 
       this.menuTools.Name = "menuTools";
-      this.menuTools.Size = new System.Drawing.Size(145, 22);
-      this.menuTools.Text = "Show &tools...";
+      this.menuTools.Size = new System.Drawing.Size(190, 22);
+      this.menuTools.Text = "Show &message trace...";
       this.menuTools.Click += new System.EventHandler(this.menuTools_Click);
       // 
       // toolStripSeparator1
       // 
       this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
+      this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
       // 
       // menuSettings
       // 
       this.menuSettings.Name = "menuSettings";
-      this.menuSettings.Size = new System.Drawing.Size(145, 22);
+      this.menuSettings.Size = new System.Drawing.Size(190, 22);
       this.menuSettings.Text = "&Settings...";
       this.menuSettings.Click += new System.EventHandler(this.menuSettings_Click);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(142, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(187, 6);
+      // 
+      // helpToolStripMenuItem
+      // 
+      this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showOverviewToolStripMenuItem,
+            this.aboutMIDIJunctionToolStripMenuItem});
+      this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+      this.helpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+      this.helpToolStripMenuItem.Text = "Help";
+      // 
+      // showOverviewToolStripMenuItem
+      // 
+      this.showOverviewToolStripMenuItem.Name = "showOverviewToolStripMenuItem";
+      this.showOverviewToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+      this.showOverviewToolStripMenuItem.Text = "Show &overview";
+      this.showOverviewToolStripMenuItem.Click += new System.EventHandler(this.showOverviewToolStripMenuItem_Click);
+      // 
+      // aboutMIDIJunctionToolStripMenuItem
+      // 
+      this.aboutMIDIJunctionToolStripMenuItem.Name = "aboutMIDIJunctionToolStripMenuItem";
+      this.aboutMIDIJunctionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+      this.aboutMIDIJunctionToolStripMenuItem.Text = "&About MIDI Junction...";
+      this.aboutMIDIJunctionToolStripMenuItem.Click += new System.EventHandler(this.aboutMIDIJunctionToolStripMenuItem_Click);
       // 
       // menuClose
       // 
       this.menuClose.Name = "menuClose";
-      this.menuClose.Size = new System.Drawing.Size(145, 22);
+      this.menuClose.Size = new System.Drawing.Size(190, 22);
       this.menuClose.Text = "E&xit";
       this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
       // 
@@ -390,6 +417,9 @@ namespace MidiJunction.Forms
     private System.Windows.Forms.ToolStripMenuItem menuSettings;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripMenuItem menuClose;
+    private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem showOverviewToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem aboutMIDIJunctionToolStripMenuItem;
   }
 }
 

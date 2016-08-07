@@ -53,6 +53,12 @@
     <Compile Include="Controls\Line.Designer.cs">
       <DependentUpon>Line.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinApi.cs" />
     <Compile Include="AppBar.cs">
       <SubType>Form</SubType>
@@ -100,11 +106,11 @@
     <Compile Include="Forms\FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormTools.cs">
+    <Compile Include="Forms\FormMessageTrace.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormTools.Designer.cs">
-      <DependentUpon>FormTools.cs</DependentUpon>
+    <Compile Include="Forms\FormMessageTrace.Designer.cs">
+      <DependentUpon>FormMessageTrace.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="Controls\Piano.cs">
@@ -123,6 +129,9 @@
     <EmbeddedResource Include="Controls\MidiBus.resx">
       <DependentUpon>MidiBus.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormKeyboard.resx">
       <DependentUpon>FormKeyboard.cs</DependentUpon>
     </EmbeddedResource>
@@ -138,8 +147,8 @@
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTools.resx">
-      <DependentUpon>FormTools.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormMessageTrace.resx">
+      <DependentUpon>FormMessageTrace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Piano.resx">
       <DependentUpon>Piano.cs</DependentUpon>

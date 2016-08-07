@@ -6,12 +6,12 @@ using MidiJunction.Devices;
 
 namespace MidiJunction.Forms
 {
-  public partial class FormTools : Form
+  public partial class FormMessageTrace : Form
   {
     private readonly Dictionary<int, List<MidiMessage>> _messages = new Dictionary<int, List<MidiMessage>>();
-    private int _currentChannel = 0;
+    private int _currentChannel;
 
-    public FormTools()
+    public FormMessageTrace()
     {
       InitializeComponent();
     }
@@ -33,6 +33,9 @@ namespace MidiJunction.Forms
 
     public void AddMessage(MidiMessage msg)
     {
+      if (!checkBox1.Checked)
+        return;
+
       if (!_messages.ContainsKey(msg.Channel))
         _messages[msg.Channel] = new List<MidiMessage>();
 

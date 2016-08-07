@@ -36,9 +36,6 @@ namespace MidiJunction.Forms
       this.label3 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.inputDevice = new System.Windows.Forms.ComboBox();
-      this.label24 = new System.Windows.Forms.Label();
-      this.label25 = new System.Windows.Forms.Label();
-      this.label26 = new System.Windows.Forms.Label();
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
       this.label5 = new System.Windows.Forms.Label();
@@ -125,53 +122,16 @@ namespace MidiJunction.Forms
       // 
       // inputDevice
       // 
-      this.inputDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
       this.inputDevice.FormattingEnabled = true;
       this.inputDevice.Location = new System.Drawing.Point(211, 70);
       this.inputDevice.Name = "inputDevice";
-      this.inputDevice.Size = new System.Drawing.Size(213, 21);
+      this.inputDevice.Size = new System.Drawing.Size(205, 21);
       this.inputDevice.TabIndex = 7;
-      // 
-      // label24
-      // 
-      this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.label24.Location = new System.Drawing.Point(15, 491);
-      this.label24.Name = "label24";
-      this.label24.Size = new System.Drawing.Size(245, 35);
-      this.label24.TabIndex = 64;
-      this.label24.Text = "Created by Mats Gefvert using C# and the virtualMIDI SDK from Tobias Erichsen.";
-      // 
-      // label25
-      // 
-      this.label25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.label25.AutoSize = true;
-      this.label25.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.label25.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label25.Location = new System.Drawing.Point(15, 534);
-      this.label25.Name = "label25";
-      this.label25.Size = new System.Drawing.Size(85, 13);
-      this.label25.TabIndex = 65;
-      this.label25.Text = "Link to website";
-      this.label25.Click += new System.EventHandler(this.LabelWebsite_Click);
-      // 
-      // label26
-      // 
-      this.label26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.label26.AutoSize = true;
-      this.label26.Cursor = System.Windows.Forms.Cursors.Hand;
-      this.label26.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.label26.Location = new System.Drawing.Point(126, 534);
-      this.label26.Name = "label26";
-      this.label26.Size = new System.Drawing.Size(124, 13);
-      this.label26.TabIndex = 66;
-      this.label26.Text = "Link to virtualMIDI SDK";
-      this.label26.Click += new System.EventHandler(this.LabelVirtualMidi_Click);
       // 
       // okButton
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.okButton.Location = new System.Drawing.Point(346, 522);
+      this.okButton.Location = new System.Drawing.Point(325, 538);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(78, 25);
       this.okButton.TabIndex = 67;
@@ -182,7 +142,7 @@ namespace MidiJunction.Forms
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(430, 522);
+      this.cancelButton.Location = new System.Drawing.Point(409, 538);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 25);
       this.cancelButton.TabIndex = 68;
@@ -210,7 +170,7 @@ namespace MidiJunction.Forms
       this.listView1.HideSelection = false;
       this.listView1.Location = new System.Drawing.Point(18, 127);
       this.listView1.Name = "listView1";
-      this.listView1.Size = new System.Drawing.Size(406, 115);
+      this.listView1.Size = new System.Drawing.Size(385, 115);
       this.listView1.TabIndex = 73;
       this.listView1.UseCompatibleStateImageBehavior = false;
       this.listView1.View = System.Windows.Forms.View.Details;
@@ -241,7 +201,7 @@ namespace MidiJunction.Forms
       this.listView2.HideSelection = false;
       this.listView2.Location = new System.Drawing.Point(18, 261);
       this.listView2.Name = "listView2";
-      this.listView2.Size = new System.Drawing.Size(406, 221);
+      this.listView2.Size = new System.Drawing.Size(385, 257);
       this.listView2.TabIndex = 74;
       this.listView2.UseCompatibleStateImageBehavior = false;
       this.listView2.View = System.Windows.Forms.View.Details;
@@ -270,7 +230,7 @@ namespace MidiJunction.Forms
       // button1
       // 
       this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button1.Location = new System.Drawing.Point(430, 127);
+      this.button1.Location = new System.Drawing.Point(409, 127);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(75, 23);
       this.button1.TabIndex = 75;
@@ -281,7 +241,7 @@ namespace MidiJunction.Forms
       // button2
       // 
       this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button2.Location = new System.Drawing.Point(430, 156);
+      this.button2.Location = new System.Drawing.Point(409, 156);
       this.button2.Name = "button2";
       this.button2.Size = new System.Drawing.Size(75, 23);
       this.button2.TabIndex = 76;
@@ -292,7 +252,7 @@ namespace MidiJunction.Forms
       // button3
       // 
       this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button3.Location = new System.Drawing.Point(430, 185);
+      this.button3.Location = new System.Drawing.Point(409, 185);
       this.button3.Name = "button3";
       this.button3.Size = new System.Drawing.Size(75, 23);
       this.button3.TabIndex = 77;
@@ -303,7 +263,7 @@ namespace MidiJunction.Forms
       // button4
       // 
       this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button4.Location = new System.Drawing.Point(430, 319);
+      this.button4.Location = new System.Drawing.Point(409, 319);
       this.button4.Name = "button4";
       this.button4.Size = new System.Drawing.Size(75, 23);
       this.button4.TabIndex = 80;
@@ -314,7 +274,7 @@ namespace MidiJunction.Forms
       // button5
       // 
       this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button5.Location = new System.Drawing.Point(430, 290);
+      this.button5.Location = new System.Drawing.Point(409, 290);
       this.button5.Name = "button5";
       this.button5.Size = new System.Drawing.Size(75, 23);
       this.button5.TabIndex = 79;
@@ -325,7 +285,7 @@ namespace MidiJunction.Forms
       // button6
       // 
       this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.button6.Location = new System.Drawing.Point(430, 261);
+      this.button6.Location = new System.Drawing.Point(409, 261);
       this.button6.Name = "button6";
       this.button6.Size = new System.Drawing.Size(75, 23);
       this.button6.TabIndex = 78;
@@ -335,8 +295,9 @@ namespace MidiJunction.Forms
       // 
       // button7
       // 
+      this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.button7.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-      this.button7.Location = new System.Drawing.Point(430, 214);
+      this.button7.Location = new System.Drawing.Point(409, 214);
       this.button7.Name = "button7";
       this.button7.Size = new System.Drawing.Size(35, 21);
       this.button7.TabIndex = 81;
@@ -346,8 +307,9 @@ namespace MidiJunction.Forms
       // 
       // button8
       // 
+      this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.button8.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-      this.button8.Location = new System.Drawing.Point(471, 214);
+      this.button8.Location = new System.Drawing.Point(449, 214);
       this.button8.Name = "button8";
       this.button8.Size = new System.Drawing.Size(35, 21);
       this.button8.TabIndex = 82;
@@ -357,8 +319,9 @@ namespace MidiJunction.Forms
       // 
       // button9
       // 
+      this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.button9.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-      this.button9.Location = new System.Drawing.Point(470, 348);
+      this.button9.Location = new System.Drawing.Point(449, 348);
       this.button9.Name = "button9";
       this.button9.Size = new System.Drawing.Size(35, 21);
       this.button9.TabIndex = 84;
@@ -368,8 +331,9 @@ namespace MidiJunction.Forms
       // 
       // button10
       // 
+      this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.button10.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-      this.button10.Location = new System.Drawing.Point(429, 348);
+      this.button10.Location = new System.Drawing.Point(409, 348);
       this.button10.Name = "button10";
       this.button10.Size = new System.Drawing.Size(35, 21);
       this.button10.TabIndex = 83;
@@ -383,7 +347,7 @@ namespace MidiJunction.Forms
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(530, 566);
+      this.ClientSize = new System.Drawing.Size(509, 584);
       this.Controls.Add(this.button9);
       this.Controls.Add(this.button10);
       this.Controls.Add(this.button8);
@@ -399,9 +363,6 @@ namespace MidiJunction.Forms
       this.Controls.Add(this.label5);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.label26);
-      this.Controls.Add(this.label25);
-      this.Controls.Add(this.label24);
       this.Controls.Add(this.inputDevice);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.label3);
@@ -431,9 +392,6 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox inputDevice;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Label label5;
