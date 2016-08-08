@@ -36,12 +36,13 @@
       this.comboBox1 = new System.Windows.Forms.ComboBox();
       this.comboBox2 = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
+      this.checkBox1 = new System.Windows.Forms.CheckBox();
       this.SuspendLayout();
       // 
       // cancelButton
       // 
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(280, 133);
+      this.cancelButton.Location = new System.Drawing.Point(280, 174);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 25);
       this.cancelButton.TabIndex = 70;
@@ -50,7 +51,7 @@
       // okButton
       // 
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(196, 133);
+      this.okButton.Location = new System.Drawing.Point(196, 174);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(78, 25);
       this.okButton.TabIndex = 69;
@@ -132,14 +133,25 @@
       this.label3.TabIndex = 75;
       this.label3.Text = "MIDI Channel";
       // 
+      // checkBox1
+      // 
+      this.checkBox1.AutoSize = true;
+      this.checkBox1.Location = new System.Drawing.Point(28, 134);
+      this.checkBox1.Name = "checkBox1";
+      this.checkBox1.Size = new System.Drawing.Size(202, 17);
+      this.checkBox1.TabIndex = 77;
+      this.checkBox1.Text = "Break to new line after this instrument";
+      this.checkBox1.UseVisualStyleBackColor = true;
+      // 
       // FormSettingButton
       // 
       this.AcceptButton = this.okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(382, 180);
+      this.ClientSize = new System.Drawing.Size(398, 225);
       this.ControlBox = false;
+      this.Controls.Add(this.checkBox1);
       this.Controls.Add(this.comboBox2);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.comboBox1);
@@ -169,5 +181,6 @@
     private System.Windows.Forms.ComboBox comboBox1;
     private System.Windows.Forms.ComboBox comboBox2;
     private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.CheckBox checkBox1;
   }
 }

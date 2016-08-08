@@ -35,12 +35,13 @@ namespace MidiJunction.Forms
 
     private readonly Config _config = new Config("midi-config.xml");
     private readonly SystemVolume _volume;
-    private bool _closing;
     private readonly List<ButtonInfo> _buttons = new List<ButtonInfo>();
     private readonly FormKeyboard _formKeyboard;
     private readonly FormSettings _formSettings;
     private readonly FormMessageTrace _formTracing;
+    private bool _closing;
     private int _currentChannel;
+    private bool _midiInitialized;
 
     public FormMain()
     {
@@ -142,26 +143,29 @@ namespace MidiJunction.Forms
       // Set up input device
       midiInputBus.Text = _config.InputDevice;
 
-      // Create flow output devices
-      var outputs = flowOutputDevicesPanel.Controls.OfType<MidiBus>().ToList();
-      foreach(var output in outputs)
-        flowOutputDevicesPanel.Controls.Remove(output);
-
-      var outputCount = _config.OutputDevices.Count;
-      foreach (var output in _config.OutputDevices)
+      if (!_midiInitialized)
       {
-        var bus = new MidiBus
-        {
-          Title = output,
-          TitleColor = Color.Transparent,
-          ForeColor = Color.White,
-          BackColor = Color.Transparent,
-          Width = flowOutputDevicesPanel.Width,
-          Height = outputCount > 2 ? 20 : 30
-        };
+        // Create flow output devices
+        var outputs = flowOutputDevicesPanel.Controls.OfType<MidiBus>().ToList();
+        foreach (var output in outputs)
+          flowOutputDevicesPanel.Controls.Remove(output);
 
-        flowOutputDevicesPanel.Controls.Add(bus);
-        flowOutputDevicesPanel.SetFlowBreak(bus, true);
+        var outputCount = _config.OutputDevices.Count;
+        foreach (var output in _config.OutputDevices)
+        {
+          var bus = new MidiBus
+          {
+            Title = output,
+            TitleColor = Color.Transparent,
+            ForeColor = Color.White,
+            BackColor = Color.Transparent,
+            Width = flowOutputDevicesPanel.Width,
+            Height = outputCount > 2 ? 20 : 30
+          };
+
+          flowOutputDevicesPanel.Controls.Add(bus);
+          flowOutputDevicesPanel.SetFlowBreak(bus, true);
+        }
       }
 
       // Create flow buttons
@@ -201,7 +205,12 @@ namespace MidiJunction.Forms
         flowButtonPanel.SetFlowBreak(flowButtonPanel.Controls[brk], true);
 
       // Configure MIDI Device Manager
-      MidiDeviceManager.SetOutputDevices(_config.OutputDevices);
+      if (!_midiInitialized)
+      {
+        MidiDeviceManager.SetOutputDevices(_config.OutputDevices);
+        _midiInitialized = true;
+      }
+
       MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
       midiBus1.Text = MidiDeviceManager.InputDevice?.Name ?? "No device found";
 

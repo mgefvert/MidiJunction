@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Gefvert.Tools.Common;
@@ -14,7 +13,8 @@ namespace MidiJunction.Forms
   {
     private readonly Config _config;
     private readonly List<string> _devices;
-    private readonly List<ConfigButton> _buttons; 
+    private readonly List<ConfigButton> _buttons;
+    private bool _restartRequired;
 
     public FormSettings(Config config)
     {
@@ -69,6 +69,7 @@ namespace MidiJunction.Forms
           return;
 
         _devices.Add(deviceName);
+        _restartRequired = true;
         listView1.VirtualListSize = _devices.Count;
       }
     }
@@ -79,7 +80,7 @@ namespace MidiJunction.Forms
 
       using (var form = new FormSettingButton { Button = button })
       {
-        if (form.ShowDialog() == DialogResult.Cancel)
+        if (!form.Execute())
           return;
 
         if (!ValidateInstrument(form.Button))
@@ -103,6 +104,10 @@ namespace MidiJunction.Forms
       _config.OutputDevices.AddRange(_devices);
       _config.Save();
 
+      if (_restartRequired)
+        MessageBox.Show("Changing the virtual MIDI outputs requires a program restart.", "Virtual MIDI changed",
+          MessageBoxButtons.OK, MessageBoxIcon.Information);
+
       _config.TriggerUpdated();
       Hide();
     }
@@ -122,6 +127,7 @@ namespace MidiJunction.Forms
           return;
 
         _devices[index] = form.DeviceName;
+        _restartRequired = true;
         listView1.Invalidate();
       }
     }
@@ -134,27 +140,26 @@ namespace MidiJunction.Forms
       var index = listView2.SelectedIndices.Cast<int>().First();
       var button = _buttons[index].Clone();
 
-      using (var form = new FormSettingButton { Button = button })
+      using (var form = new FormSettingButton { Button = button, BreakAfter = _config.BreakAfter.Contains(index) })
       {
-        if (form.ShowDialog() == DialogResult.Cancel)
+        if (!form.Execute())
           return;
 
         if (!ValidateInstrument(form.Button))
           return;
 
         _buttons[index] = form.Button;
+
+        if (form.BreakAfter)
+        {
+          if (!_config.BreakAfter.Contains(index))
+            _config.BreakAfter.Add(index);
+        }
+        else
+          _config.BreakAfter.Remove(index);
+
         listView2.Invalidate();
       }
-    }
-
-    private void LabelVirtualMidi_Click(object sender, EventArgs e)
-    {
-      Process.Start("http://www.tobias-erichsen.de/");
-    }
-
-    private void LabelWebsite_Click(object sender, EventArgs e)
-    {
-      Process.Start("http://www.gefvert.org/midi-junction");
     }
 
     private void ListViewBus_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
@@ -176,7 +181,7 @@ namespace MidiJunction.Forms
         ((char)(65 + button.Device)).ToString(),
         (button.Channel + 1).ToString(),
         button.Name,
-        _config.BreakAfter.Contains(e.ItemIndex + 1) ? "Yes" : "No"
+        _config.BreakAfter.Contains(e.ItemIndex) ? "Yes" : ""
       });
     }
 
