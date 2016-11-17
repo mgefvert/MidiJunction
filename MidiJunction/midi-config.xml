@@ -2,7 +2,6 @@
   <input-device>UM-One</input-device>
   <output-devices>
     <device name="Midi_Reason"/>
-    <device name="Midi_Kontakt"/>
   </output-devices>
   <default-channel>0</default-channel>
   <buttons>
@@ -16,10 +15,10 @@
     <button device="0" channel="7" name="Choir"/>
     <button device="0" channel="8" name="Space Verb"/>
     <button device="0" channel="9" name="Sweeps"/>
-    <button device="0" channel="11" name="Bells"/>
+    <button device="0" channel="10" name="New Organ"/>
+    <button device="0" channel="11" name="Close Encounters"/>
   </buttons>
   <break>
     <after>4</after>
-    <after>10</after>
   </break>
 </xml>

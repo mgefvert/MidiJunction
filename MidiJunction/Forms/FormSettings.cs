@@ -12,34 +12,14 @@ namespace MidiJunction.Forms
     public partial class FormSettings : Form
     {
         private readonly Config _config;
-        private readonly List<string> _devices;
-        private readonly List<ConfigButton> _buttons;
+        private List<string> _devices;
+        private List<ConfigButton> _buttons;
         private bool _restartRequired;
 
         public FormSettings(Config config)
         {
             InitializeComponent();
             _config = config;
-            _devices = _config.OutputDevices.ToList();
-            _buttons = _config.Buttons.Select(x => x.Clone()).ToList();
-        }
-
-        private void FormSettings_Shown(object sender, EventArgs e)
-        {
-            midiChannel.Value = Helper.Limit(_config.DefaultChannel + 1, 1, 16);
-            inputDevice.Text = _config.InputDevice;
-
-            inputDevice.Items.Clear();
-            for (int i = 0; i < MidiDeviceManager.InDeviceCount; i++)
-            {
-                var info = MidiDeviceManager.InDeviceInfo(i);
-                var name = (info.szPname ?? "").Trim();
-                if (!string.IsNullOrEmpty(name) && !_config.OutputDevices.Contains(name, StringComparer.CurrentCultureIgnoreCase))
-                    inputDevice.Items.Add(name);
-            }
-
-            listView1.VirtualListSize = _devices.Count;
-            listView2.VirtualListSize = _buttons.Count;
         }
 
         private void FormSettings_FormClosing(object sender, FormClosingEventArgs e)
@@ -98,6 +78,8 @@ namespace MidiJunction.Forms
 
         private void ButtonOk_Click(object sender, EventArgs e)
         {
+            _config.Buttons.Clear();
+            _config.Buttons.AddRange(_buttons);
             _config.DefaultChannel = Helper.Limit((int)midiChannel.Value - 1, 0, 15);
             _config.InputDevice = inputDevice.Text.Trim();
             _config.OutputDevices.Clear();
@@ -166,9 +148,9 @@ namespace MidiJunction.Forms
         {
             e.Item = new ListViewItem(new[]
             {
-        ((char)(65 + e.ItemIndex)).ToString(),
-        _devices.ElementAtOrDefault(e.ItemIndex)
-      });
+                ((char)(65 + e.ItemIndex)).ToString(),
+                _devices.ElementAtOrDefault(e.ItemIndex)
+            });
         }
 
         private void ListViewInstrument_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
@@ -177,12 +159,12 @@ namespace MidiJunction.Forms
 
             e.Item = new ListViewItem(new[]
             {
-        e.ItemIndex < 12 ? "F" + (e.ItemIndex + 1) : "",
-        ((char)(65 + button.Device)).ToString(),
-        (button.Channel + 1).ToString(),
-        button.Name,
-        _config.BreakAfter.Contains(e.ItemIndex) ? "Yes" : ""
-      });
+                Helper.KeyToString(button.Key),
+                ((char)(65 + button.Device)).ToString(),
+                (button.Channel + 1).ToString(),
+                button.Name,
+                _config.BreakAfter.Contains(e.ItemIndex) ? "Yes" : ""
+            });
         }
 
         private void MoveBusDown(object sender, EventArgs e)
@@ -269,6 +251,35 @@ namespace MidiJunction.Forms
             }
 
             return true;
+        }
+
+        private void FormSettings_VisibleChanged(object sender, EventArgs e)
+        {
+            if (!Visible)
+                return;
+
+            InitializeData();
+        }
+
+        private void InitializeData()
+        {
+            _devices = _config.OutputDevices.ToList();
+            _buttons = _config.Buttons.Select(x => x.Clone()).ToList();
+
+            midiChannel.Value = Helper.Limit(_config.DefaultChannel + 1, 1, 16);
+            inputDevice.Text = _config.InputDevice;
+
+            inputDevice.Items.Clear();
+            for (int i = 0; i < MidiDeviceManager.InDeviceCount; i++)
+            {
+                var info = MidiDeviceManager.InDeviceInfo(i);
+                var name = (info.szPname ?? "").Trim();
+                if (!string.IsNullOrEmpty(name) && !_config.OutputDevices.Contains(name, StringComparer.CurrentCultureIgnoreCase))
+                    inputDevice.Items.Add(name);
+            }
+
+            listView1.VirtualListSize = _devices.Count;
+            listView2.VirtualListSize = _buttons.Count;
         }
     }
 }

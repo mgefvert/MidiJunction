@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace MidiJunction
 {
@@ -44,6 +45,23 @@ namespace MidiJunction
         public static Color SetAlpha(this Color color, byte alpha)
         {
             return Color.FromArgb(alpha, color.R, color.G, color.B);
+        }
+
+        public static string KeyToString(Keys key)
+        {
+            return key >= Keys.D0 && key <= Keys.D9 ? key.ToString().Substring(1) : key.ToString();
+        }
+
+        public static Keys StringToKey(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return Keys.None;
+
+            if (value.Length == 1 && value[0] >= '0' && value[0] <= '9')
+                value = "D" + value;
+
+            Keys result;
+            return Enum.TryParse(value, true, out result) ? result : Keys.None;
         }
     }
 }

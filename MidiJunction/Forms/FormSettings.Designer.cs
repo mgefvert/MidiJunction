@@ -47,6 +47,7 @@ namespace MidiJunction.Forms
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -57,7 +58,6 @@ namespace MidiJunction.Forms
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.midiChannel)).BeginInit();
             this.SuspendLayout();
             // 
@@ -161,8 +161,8 @@ namespace MidiJunction.Forms
             // 
             // listView1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
@@ -177,6 +177,7 @@ namespace MidiJunction.Forms
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.VirtualMode = true;
             this.listView1.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListViewBus_RetrieveVirtualItem);
+            this.listView1.DoubleClick += new System.EventHandler(this.EditBus_Click);
             // 
             // columnHeader1
             // 
@@ -189,9 +190,9 @@ namespace MidiJunction.Forms
             // 
             // listView2
             // 
-            this.listView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader3,
             this.columnHeader4,
@@ -209,6 +210,7 @@ namespace MidiJunction.Forms
             this.listView2.View = System.Windows.Forms.View.Details;
             this.listView2.VirtualMode = true;
             this.listView2.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListViewInstrument_RetrieveVirtualItem);
+            this.listView2.DoubleClick += new System.EventHandler(this.EditInstrument_Click);
             // 
             // columnHeader3
             // 
@@ -228,6 +230,11 @@ namespace MidiJunction.Forms
             // 
             this.columnHeader6.Text = "Name";
             this.columnHeader6.Width = 200;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Break";
+            this.columnHeader7.Width = 50;
             // 
             // button1
             // 
@@ -343,11 +350,6 @@ namespace MidiJunction.Forms
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.MoveInstrumentUp);
             // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Break";
-            this.columnHeader7.Width = 50;
-            // 
             // FormSettings
             // 
             this.AcceptButton = this.okButton;
@@ -385,7 +387,7 @@ namespace MidiJunction.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MIDI Junction Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSettings_FormClosing);
-            this.Shown += new System.EventHandler(this.FormSettings_Shown);
+            this.VisibleChanged += new System.EventHandler(this.FormSettings_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.midiChannel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using CommonNetTools;
 
@@ -8,6 +9,15 @@ namespace MidiJunction
 {
     public class Config
     {
+        public static readonly Keys[] AllowedKeys =
+        {
+            Keys.F1, Keys.F2, Keys.F3, Keys.F4, Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12,
+            Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0,
+            Keys.Q, Keys.W, Keys.E, Keys.R, Keys.T, Keys.Y, Keys.U, Keys.I, Keys.O, Keys.P,
+            Keys.A, Keys.S, Keys.D, Keys.F, Keys.G, Keys.H, Keys.J, Keys.K, Keys.L,
+            Keys.Z, Keys.X, Keys.C, Keys.V, Keys.B, Keys.N, Keys.M,
+        };
+
         private readonly string _filename;
 
         public string InputDevice { get; set; }
@@ -58,7 +68,13 @@ namespace MidiJunction
                 if (string.IsNullOrEmpty(name))
                     name = $"D{device} Ch{channel}";
 
-                Buttons.Add(new ConfigButton { Device = device, Channel = channel, Name = name });
+                Buttons.Add(new ConfigButton
+                {
+                    Device = device,
+                    Channel = channel,
+                    Name = name,
+                    Key = Helper.StringToKey(node.Attribute("key")?.Value)
+                });
             }
 
             BreakAfter.Clear();
@@ -78,7 +94,8 @@ namespace MidiJunction
             var buttons = Buttons.Select(x => new XElement("button",
               new XAttribute("device", x.Device),
               new XAttribute("channel", x.Channel),
-              new XAttribute("name", x.Name)
+              new XAttribute("name", x.Name),
+              new XAttribute("key", Helper.KeyToString(x.Key))
             ));
             var breaks = BreakAfter.Select(x => new XElement("after", x));
 

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonNetTools;
 using MidiJunction.Controls;
 using MidiJunction.Devices;
 
@@ -22,7 +21,7 @@ namespace MidiJunction.Forms
         {
             public ConfigButton Config { get; set; }
             public Button Button { get; set; }
-            public Keys Key { get; set; }
+            public Keys Key => Config.Key;
             public bool Active { get; set; }
             public bool HotStandby { get; set; }
 
@@ -171,8 +170,6 @@ namespace MidiJunction.Forms
             // Create flow buttons
             flowButtonPanel.Controls.Clear();
 
-            var fKey = 1;
-            var keys = new List<Keys> { Keys.F1, Keys.F2, Keys.F3, Keys.F4, Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12 };
             var first = true;
             foreach (var c in _config.Buttons)
             {
@@ -180,7 +177,7 @@ namespace MidiJunction.Forms
                 {
                     Button = new Button
                     {
-                        Text = "F" + (fKey++) + " " + c.Name,
+                        Text = (c.Key == Keys.None ? "·" : Helper.KeyToString(c.Key)) + " " + c.Name,
                         BackColor = Color.FromArgb(51, 51, 51),
                         FlatStyle = FlatStyle.Flat,
                         AutoSize = true,
@@ -190,7 +187,6 @@ namespace MidiJunction.Forms
                         ForeColor = Color.White,
                     },
                     Config = c,
-                    Key = keys.ExtractFirstOrDefault(),
                     Active = first
                 };
                 bi.Button.Click += ChannelButtonClick;
