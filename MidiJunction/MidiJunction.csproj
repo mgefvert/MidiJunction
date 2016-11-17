@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MidiJunction</RootNamespace>
     <AssemblyName>MidiJunction</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -199,9 +200,9 @@
     <Content Include="Images\piano.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Gefvert.Tools\Gefvert.Tools.Common\Gefvert.Tools.Common.csproj">
-      <Project>{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}</Project>
-      <Name>Gefvert.Tools.Common</Name>
+    <ProjectReference Include="..\..\CommonNetTools\CommonNetTools\CommonNetTools.csproj">
+      <Project>{a86d8b8b-d601-4eb9-aa0a-e03372acc104}</Project>
+      <Name>CommonNetTools</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,45 +3,45 @@ using System.ComponentModel;
 
 namespace MidiJunction.Devices
 {
-  public class MidiMessageEventArgs
-  {
-    public int Handle { get; }
-    public MidiMessage Message { get; }
-
-    public MidiMessageEventArgs(int handle, MidiMessage message)
+    public class MidiMessageEventArgs
     {
-      Handle = handle;
-      Message = message;
-    }
-  }
+        public int Handle { get; }
+        public MidiMessage Message { get; }
 
-  public delegate void MidiMessageHandler(object sender, MidiMessageEventArgs args);
-
-  public abstract class MidiDevice : IDisposable
-  {
-    public int Id { get; }
-    public string Name { get; }
-    public event MidiMessageHandler Message;
-    protected bool Closing;
-
-    protected MidiDevice(int device, string name)
-    {
-      Id = device;
-      Name = name;
+        public MidiMessageEventArgs(int handle, MidiMessage message)
+        {
+            Handle = handle;
+            Message = message;
+        }
     }
 
-    public abstract void Dispose();
+    public delegate void MidiMessageHandler(object sender, MidiMessageEventArgs args);
 
-    protected void CheckResult(WinMM.MMRESULT resultCode)
+    public abstract class MidiDevice : IDisposable
     {
-      if (resultCode != WinMM.MMRESULT.MMSYSERR_NOERROR)
-        throw new Win32Exception((int)resultCode);
-    }
+        public int Id { get; }
+        public string Name { get; }
+        public event MidiMessageHandler Message;
+        protected bool Closing;
 
-    protected void MidiHandler(int handle, int msg, int instance, int param1, int param2)
-    {
-      if (!Closing)
-        Message?.Invoke(this, new MidiMessageEventArgs(handle, new MidiMessage((uint)param1)));
+        protected MidiDevice(int device, string name)
+        {
+            Id = device;
+            Name = name;
+        }
+
+        public abstract void Dispose();
+
+        protected void CheckResult(WinMM.MMRESULT resultCode)
+        {
+            if (resultCode != WinMM.MMRESULT.MMSYSERR_NOERROR)
+                throw new Win32Exception((int)resultCode);
+        }
+
+        protected void MidiHandler(int handle, int msg, int instance, int param1, int param2)
+        {
+            if (!Closing)
+                Message?.Invoke(this, new MidiMessageEventArgs(handle, new MidiMessage((uint)param1)));
+        }
     }
-  }
 }

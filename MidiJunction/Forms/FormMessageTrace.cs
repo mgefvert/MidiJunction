@@ -6,87 +6,87 @@ using MidiJunction.Devices;
 
 namespace MidiJunction.Forms
 {
-  public partial class FormMessageTrace : Form
-  {
-    private readonly Dictionary<int, List<MidiMessage>> _messages = new Dictionary<int, List<MidiMessage>>();
-    private int _currentChannel;
-
-    public FormMessageTrace()
+    public partial class FormMessageTrace : Form
     {
-      InitializeComponent();
-    }
+        private readonly Dictionary<int, List<MidiMessage>> _messages = new Dictionary<int, List<MidiMessage>>();
+        private int _currentChannel;
 
-    private void listView1_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
-    {
-      if (_messages.ContainsKey(_currentChannel))
-      {
-        var item = _messages[_currentChannel].ElementAtOrDefault(e.ItemIndex);
-        if (item != null)
+        public FormMessageTrace()
         {
-          e.Item = new ListViewItem(new[] { item.Time.ToString("HH:mm:ss.fff"), item.ToString() });
-          return;
+            InitializeComponent();
         }
-      }
 
-      e.Item = new ListViewItem(new [] { "", "" });
-    }
-
-    public void AddMessage(MidiMessage msg)
-    {
-      if (!checkBox1.Checked)
-        return;
-
-      if (!_messages.ContainsKey(msg.Channel))
-        _messages[msg.Channel] = new List<MidiMessage>();
-
-      var channel = _messages[msg.Channel];
-      channel.Insert(0, msg);
-      if (channel.Count > 1000)
-        channel.RemoveRange(1000, channel.Count - 1000);
-
-      if (msg.Channel == _currentChannel)
-        UpdateListView();
-    }
-
-    private void UpdateListView()
-    {
-      if (listView1.Visible)
-        listView1.Invoke((Action)delegate
+        private void listView1_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-          listView1.VirtualListSize = _messages.ContainsKey(_currentChannel) ? _messages[_currentChannel].Count : 0;
-          listView1.Invalidate();
-        });
-    }
+            if (_messages.ContainsKey(_currentChannel))
+            {
+                var item = _messages[_currentChannel].ElementAtOrDefault(e.ItemIndex);
+                if (item != null)
+                {
+                    e.Item = new ListViewItem(new[] { item.Time.ToString("HH:mm:ss.fff"), item.ToString() });
+                    return;
+                }
+            }
 
-    public void Select(int channel)
-    {
-      _currentChannel = channel;
-      UpdateListView();
-    }
+            e.Item = new ListViewItem(new[] { "", "" });
+        }
 
-    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      Select(comboBox1.SelectedIndex);
-    }
+        public void AddMessage(MidiMessage msg)
+        {
+            if (!checkBox1.Checked)
+                return;
 
-    private void FormTools_Shown(object sender, EventArgs e)
-    {
-      Select(_currentChannel);
-    }
+            if (!_messages.ContainsKey(msg.Channel))
+                _messages[msg.Channel] = new List<MidiMessage>();
 
-    private void FormTools_FormClosing(object sender, FormClosingEventArgs e)
-    {
-      if (e.CloseReason == CloseReason.UserClosing)
-      {
-        e.Cancel = true;
-        Hide();
-      }
-    }
+            var channel = _messages[msg.Channel];
+            channel.Insert(0, msg);
+            if (channel.Count > 1000)
+                channel.RemoveRange(1000, channel.Count - 1000);
 
-    private void FormTools_Load(object sender, EventArgs e)
-    {
-      comboBox1.SelectedIndex = 0;
-      Select(0);
+            if (msg.Channel == _currentChannel)
+                UpdateListView();
+        }
+
+        private void UpdateListView()
+        {
+            if (listView1.Visible)
+                listView1.Invoke((Action)delegate
+                {
+                    listView1.VirtualListSize = _messages.ContainsKey(_currentChannel) ? _messages[_currentChannel].Count : 0;
+                    listView1.Invalidate();
+                });
+        }
+
+        public void Select(int channel)
+        {
+            _currentChannel = channel;
+            UpdateListView();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Select(comboBox1.SelectedIndex);
+        }
+
+        private void FormTools_Shown(object sender, EventArgs e)
+        {
+            Select(_currentChannel);
+        }
+
+        private void FormTools_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+        }
+
+        private void FormTools_Load(object sender, EventArgs e)
+        {
+            comboBox1.SelectedIndex = 0;
+            Select(0);
+        }
     }
-  }
 }
