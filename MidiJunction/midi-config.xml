@@ -5,18 +5,18 @@
   </output-devices>
   <default-channel>0</default-channel>
   <buttons>
-    <button device="0" channel="0" name="Piano"/>
-    <button device="0" channel="1" name="Pop Piano"/>
-    <button device="0" channel="2" name="Flute"/>
-    <button device="0" channel="3" name="Organ"/>
-    <button device="0" channel="4" name="Strings"/>
-    <button device="0" channel="5" name="Soft Pad"/>
-    <button device="0" channel="6" name="Organ Pad"/>
-    <button device="0" channel="7" name="Choir"/>
-    <button device="0" channel="8" name="Space Verb"/>
-    <button device="0" channel="9" name="Sweeps"/>
-    <button device="0" channel="10" name="New Organ"/>
-    <button device="0" channel="11" name="Close Encounters"/>
+    <button device="0" channel="0" name="Piano" key="1" />
+    <button device="0" channel="1" name="Pop Piano" key="2" />
+    <button device="0" channel="2" name="Flute" key="3" />
+    <button device="0" channel="3" name="Organ" key="4" />
+    <button device="0" channel="11" name="Close Encounters" key="9" />
+    <button device="0" channel="4" name="Strings" key="Q" />
+    <button device="0" channel="5" name="Soft Pad" key="W" />
+    <button device="0" channel="6" name="Organ Pad" key="E" />
+    <button device="0" channel="7" name="Choir" key="R" />
+    <button device="0" channel="8" name="Space Verb" key="T" />
+    <button device="0" channel="9" name="Sweeps" key="Y" />
+    <button device="0" channel="10" name="New Organ" key="U" />
   </buttons>
   <break>
     <after>4</after>
