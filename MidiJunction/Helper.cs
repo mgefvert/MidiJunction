@@ -63,5 +63,19 @@ namespace MidiJunction
             Keys result;
             return Enum.TryParse(value, true, out result) ? result : Keys.None;
         }
+
+        public static T StringToEnum<T>(string value) where T : struct
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return default(T);
+
+            T result;
+            return Enum.TryParse(value, true, out result) ? result : default(T);
+        }
+
+        public static string EnumToString<T>(T value, bool hideDefault) where T : struct
+        {
+            return value.Equals(default(T)) ? "" : value.ToString();
+        }
     }
 }

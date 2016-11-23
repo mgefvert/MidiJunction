@@ -1,13 +1,38 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using MidiJunction.Configuration;
 
 namespace MidiJunction.Forms
 {
     public partial class FormSettingButton : Form
     {
         public ConfigButton Button { get; set; }
-        public bool BreakAfter { get; set; }
+
+        public BreakType BreakType
+        {
+            get
+            {
+                return radioBreakNewLine.Checked
+                    ? BreakType.NewLine
+                    : (radioBreakSeparator.Checked ? BreakType.Separator : BreakType.None);
+            }
+            set
+            {
+                switch (value)
+                {
+                    case BreakType.Separator:
+                        radioBreakSeparator.Checked = true;
+                        break;
+                    case BreakType.NewLine:
+                        radioBreakNewLine.Checked = true;
+                        break;
+                    default:
+                        radioNoBreak.Checked = true;
+                        break;
+                }
+            }
+        }
 
         public FormSettingButton()
         {
@@ -24,7 +49,7 @@ namespace MidiJunction.Forms
             comboBox1.SelectedIndex = Button.Device;
             comboBox2.SelectedIndex = Button.Channel;
             comboBox3.Text = Helper.KeyToString(Button.Key);
-            checkBox1.Checked = BreakAfter;
+            BreakType = Button.BreakAfter;
 
             if (ShowDialog() != DialogResult.OK)
                 return false;
@@ -33,8 +58,7 @@ namespace MidiJunction.Forms
             Button.Device = comboBox1.SelectedIndex;
             Button.Channel = comboBox2.SelectedIndex;
             Button.Key = Helper.StringToKey(comboBox3.Text);
-
-            BreakAfter = checkBox1.Checked;
+            Button.BreakAfter = BreakType;
             return true;
         }
     }

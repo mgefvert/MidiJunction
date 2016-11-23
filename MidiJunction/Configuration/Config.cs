@@ -5,13 +5,12 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using CommonNetTools;
 
-namespace MidiJunction
+namespace MidiJunction.Configuration
 {
     public class Config
     {
         public static readonly Keys[] AllowedKeys =
         {
-            Keys.F1, Keys.F2, Keys.F3, Keys.F4, Keys.F5, Keys.F6, Keys.F7, Keys.F8, Keys.F9, Keys.F10, Keys.F11, Keys.F12,
             Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0,
             Keys.Q, Keys.W, Keys.E, Keys.R, Keys.T, Keys.Y, Keys.U, Keys.I, Keys.O, Keys.P,
             Keys.A, Keys.S, Keys.D, Keys.F, Keys.G, Keys.H, Keys.J, Keys.K, Keys.L,
@@ -24,7 +23,7 @@ namespace MidiJunction
         public List<string> OutputDevices { get; } = new List<string>();
         public List<ConfigButton> Buttons { get; } = new List<ConfigButton>();
         public int DefaultChannel { get; set; }
-        public List<int> BreakAfter { get; } = new List<int>();
+        public Dictionary<int, ConfigPerformance> Performances = new Dictionary<int, ConfigPerformance>(); 
 
         public event EventHandler Updated;
 
@@ -73,17 +72,27 @@ namespace MidiJunction
                     Device = device,
                     Channel = channel,
                     Name = name,
-                    Key = Helper.StringToKey(node.Attribute("key")?.Value)
+                    Key = Helper.StringToKey(node.Attribute("key")?.Value),
+                    BreakAfter = Helper.StringToEnum<BreakType>(node.Attribute("break")?.Value)
                 });
             }
 
-            BreakAfter.Clear();
-            BreakAfter.AddRange(xml
-              .Elements("break")
-              .Elements("after")
-              .Select(x => x.Value.ParseInt())
-              .Where(x => x != 0)
-            );
+            Performances.Clear();
+            foreach (var node in xml.Elements("performances").Elements("performance"))
+            {
+                var fkey = node.Attribute("fkey")?.Value.ParseInt() ?? 0;
+                var title = node.Attribute("title")?.Value;
+                var data = node.Attribute("data")?.Value;
+                if (fkey < 1 || fkey > 12 || string.IsNullOrEmpty(data))
+                    continue;
+
+                Performances[fkey] = new ConfigPerformance
+                {
+                    FKey = fkey,
+                    Title = title,
+                    Data = data
+                };
+            }
 
             DefaultChannel = Helper.Limit(xml.Element("default-channel")?.Value.ParseInt() ?? 0, 0, 15);
         }
@@ -95,9 +104,14 @@ namespace MidiJunction
               new XAttribute("device", x.Device),
               new XAttribute("channel", x.Channel),
               new XAttribute("name", x.Name),
-              new XAttribute("key", Helper.KeyToString(x.Key))
+              new XAttribute("key", Helper.KeyToString(x.Key)),
+              new XAttribute("break", x.BreakAfter.ToString())
             ));
-            var breaks = BreakAfter.Select(x => new XElement("after", x));
+            var performances = Performances.Values.Select(x => new XElement("performance",
+              new XAttribute("fkey", x.FKey),
+              new XAttribute("title", x.Title),
+              new XAttribute("data", x.Data)
+            ));
 
             var doc = new XDocument(
               new XElement("xml",
@@ -105,7 +119,7 @@ namespace MidiJunction
                 new XElement("output-devices", outputDevices),
                 new XElement("default-channel", DefaultChannel),
                 new XElement("buttons", buttons),
-                new XElement("break", breaks)
+                new XElement("performances", performances)
               )
             );
 

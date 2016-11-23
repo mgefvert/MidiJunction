@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ConfigPerformance.cs" />
     <Compile Include="Controls\Line.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -60,12 +61,18 @@
     <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormInputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormInputDialog.Designer.cs">
+      <DependentUpon>FormInputDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="WinApi.cs" />
     <Compile Include="AppBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfigButton.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Configuration\ConfigButton.cs" />
+    <Compile Include="Configuration\Config.cs" />
     <Compile Include="Controls\MidiBus.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -144,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettingDevice.resx">
       <DependentUpon>FormSettingDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormInputDialog.resx">
+      <DependentUpon>FormInputDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CommonNetTools;
+using MidiJunction.Configuration;
 using MidiJunction.Controls;
 using MidiJunction.Devices;
 
@@ -15,7 +17,30 @@ namespace MidiJunction.Forms
 {
     public partial class FormMain : AppBarForm
     {
-        private static readonly Color HotStandbyColor = Helper.Mix(Color.DodgerBlue, Color.FromArgb(51, 51, 51), 50);
+        public class KeyMapEntry
+        {
+            public Keys StartKey { get; }
+            public Keys EndKey { get; }
+            public bool Shift { get; }
+            public Action<Keys> Action { get; }
+
+            public KeyMapEntry(Keys startKey, Keys endKey, bool shift, Action<Keys> action)
+            {
+                StartKey = startKey;
+                EndKey = endKey;
+                Shift = shift;
+                Action = action;
+            }
+
+            public KeyMapEntry(Keys key, bool shift, Action<Keys> action) : this(key, key, shift, action)
+            {
+            }
+
+            public bool Match(Keys key, bool shift)
+            {
+                return key >= StartKey && key <= EndKey && shift == Shift;
+            }
+        }
 
         public class ButtonInfo
         {
@@ -25,6 +50,16 @@ namespace MidiJunction.Forms
             public bool Active { get; set; }
             public bool HotStandby { get; set; }
 
+            public void Click()
+            {
+                Button.PerformClick();
+            }
+
+            public void ToggleStandby()
+            {
+                HotStandby = !HotStandby;
+            }
+
             public void Recolor()
             {
                 Button.BackColor = Active ? Color.Chartreuse : (HotStandby ? HotStandbyColor : Color.Transparent);
@@ -32,6 +67,11 @@ namespace MidiJunction.Forms
             }
         }
 
+        private static readonly Color HotStandbyColor = Helper.Mix(Color.DodgerBlue, Color.FromArgb(51, 51, 51), 50);
+        private readonly Font _regularFont;
+        private readonly Font _boldFont;
+
+        private readonly List<KeyMapEntry> _keyMap = new List<KeyMapEntry>();
         private readonly Config _config = new Config("midi-config.xml");
         private readonly SystemVolume _volume;
         private readonly List<ButtonInfo> _buttons = new List<ButtonInfo>();
@@ -41,11 +81,17 @@ namespace MidiJunction.Forms
         private bool _closing;
         private int _currentChannel;
         private bool _midiInitialized;
+        private Keys? _activeHotKey;
+        private DateTime _activeHotKeyTime;
 
         public FormMain()
         {
             InitializeComponent();
 
+            _regularFont = new Font(label1.Font, FontStyle.Regular);
+            _boldFont = new Font(label1.Font, FontStyle.Bold);
+
+            label1.Text = "";
             _config.Updated += (sender, args) => InitializeFromConfig();
 
             _formSettings = new FormSettings(_config);
@@ -53,7 +99,39 @@ namespace MidiJunction.Forms
             _formKeyboard = new FormKeyboard();
             _volume = new SystemVolume();
 
+            _keyMap.AddRange(new[]
+            {
+                // Space - toggle hot switch buttons
+                new KeyMapEntry(Keys.Space, false, keys => PerformHotSwitch()),
+
+                // Escape - reset everything
+                new KeyMapEntry(Keys.Escape, false, keys => ResetAllNotes()),
+
+                // Volume up/down
+                new KeyMapEntry(Keys.Add, false, keys => _volume.Increase10()),
+                new KeyMapEntry(Keys.Subtract, false, keys => _volume.Decrease10()),
+
+                // Send test note
+                new KeyMapEntry(Keys.Divide, false, keys => SendTestNotes()),
+
+                // Function keys for loading and saving performances
+                new KeyMapEntry(Keys.F1, Keys.F12, false, SelectPerformance),
+                new KeyMapEntry(Keys.F1, Keys.F12, true, SavePerformance),
+
+                // A-Z, 0-9 keys for switching instruments
+                new KeyMapEntry(Keys.A, Keys.Z, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
+                new KeyMapEntry(Keys.A, Keys.Z, true, keys => { _buttons.FirstOrDefault(x => x.Key == keys)?.ToggleStandby(); RecolorButtons(); }),
+                new KeyMapEntry(Keys.D0, Keys.D9, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
+                new KeyMapEntry(Keys.D0, Keys.D9, true, keys => { _buttons.FirstOrDefault(x => x.Key == keys)?.ToggleStandby(); RecolorButtons(); }),
+            });
+
             RegisterAppBar();
+        }
+
+        private void PerformHotSwitch()
+        {
+            foreach (var b in _buttons.Where(x => x.HotStandby))
+                b.Button.PerformClick();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -80,39 +158,16 @@ namespace MidiJunction.Forms
 
         private void FormMain_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
-            {
-                case Keys.Space:
-                    foreach (var button in _buttons.Where(x => x.HotStandby))
-                        button.Button.PerformClick();
-                    e.Handled = true;
-                    break;
-                case Keys.Escape:
-                    ResetAllNotes();
-                    e.Handled = true;
-                    return;
-                case Keys.Add:
-                    _volume.Increase10();
-                    e.Handled = true;
-                    return;
-                case Keys.Subtract:
-                    _volume.Decrease10();
-                    e.Handled = true;
-                    return;
-            }
+            if (e.Control || e.Alt)
+                return;
 
-            var bi = _buttons.FirstOrDefault(x => x.Key == e.KeyCode);
-            if (bi == null)
+            // Find key map entry
+            var keymap = _keyMap.FirstOrDefault(x => x.Match(e.KeyCode, e.Shift));
+            if (keymap == null)
                 return;
 
             e.Handled = true;
-            if (e.Shift)
-            {
-                bi.HotStandby = !bi.HotStandby;
-                RecolorButtons();
-            }
-            else
-                bi.Button.PerformClick();
+            keymap.Action(e.KeyCode);
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -141,6 +196,7 @@ namespace MidiJunction.Forms
 
             // Set up input device
             midiInputBus.Text = _config.InputDevice;
+            UpdatePerformances();
 
             if (!_midiInitialized)
             {
@@ -194,11 +250,14 @@ namespace MidiJunction.Forms
 
                 _buttons.Add(bi);
                 flowButtonPanel.Controls.Add(bi.Button);
+
+                if (c.BreakAfter == BreakType.NewLine)
+                    flowButtonPanel.SetFlowBreak(bi.Button, true);
+                else if (c.BreakAfter == BreakType.Separator)
+                    flowButtonPanel.Controls.Add(NewLabelSeparator(bi.Button.Height));
+
                 first = false;
             }
-
-            foreach (var brk in _config.BreakAfter)
-                flowButtonPanel.SetFlowBreak(flowButtonPanel.Controls[brk], true);
 
             // Configure MIDI Device Manager
             if (!_midiInitialized)
@@ -219,6 +278,19 @@ namespace MidiJunction.Forms
 
             RecolorButtons();
             GC.Collect();
+        }
+
+        private Control NewLabelSeparator(int height)
+        {
+            return new Label
+            {
+                AutoSize = false,
+                Text = ".",
+                ForeColor = Color.White,
+                Width = 16,
+                Height = height,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
         }
 
         private void ChannelButtonClick(object sender, EventArgs e)
@@ -292,14 +364,18 @@ namespace MidiJunction.Forms
             _formTracing.AddMessage(msg);
 
             // Tick
-            Invoke((Action)delegate
-            { TimerTick(this, EventArgs.Empty); });
+            Invoke((Action) delegate
+            {
+                TimerTick(this, EventArgs.Empty);
+            });
         }
 
         private void RecolorButtons()
         {
-            Invoke((Action)delegate
-            { _buttons.ForEach(x => x.Recolor()); });
+            Invoke((Action) delegate
+            {
+                _buttons.ForEach(x => x.Recolor());
+            });
         }
 
         private void ResetAllNotes()
@@ -366,6 +442,14 @@ namespace MidiJunction.Forms
                 var active = WinApi.GetForegroundWindow() == Handle;
                 focusLabel.BackColor = active ? Color.Chartreuse : (ticks < 400 ? Color.Red : Color.Gray);
 
+                // Update hot key indicator
+                if (_activeHotKeyTime < DateTime.Now)
+                {
+                    _activeHotKeyTime = DateTime.MinValue;
+                    _activeHotKey = null;
+                    UpdatePerformances();
+                }
+
                 // Rescan MIDI output
                 if (_closing)
                     return;
@@ -418,6 +502,135 @@ namespace MidiJunction.Forms
         private void showOverviewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("http://www.gefvert.org/site/downloads/midi-junction");
+        }
+
+        private void keysToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var msg = new List<string>
+            {
+                "NUMPAD + -\tRaise/lower volume",
+                "NUMPAD /\tSend test notes",
+                "ESC\t\tAll notes off and reset instruments",
+                "",
+                "A-Z, 0-9\t\tActivate instrument",
+                "SHIFT A-Z, 0-9\tMake instrument hot-standby",
+                "SPACE\t\tToggle hot-standby instruments",
+                "",
+                "F1-F12\t\tSelect performance",
+                "Shift F1-F12\tSave current instruments as performance"
+            };
+
+            MessageBox.Show(string.Join("\r\n", msg), "Keys", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void SavePerformance(Keys key)
+        {
+            var fkey = (int) key - (int) Keys.F1 + 1;
+            if (fkey < 1 || fkey > 12)
+                return;
+
+            var items = _buttons
+                .Where(button => button.Active || button.HotStandby)
+                .Select(b => b.Config.Device + "," + b.Config.Channel + "," + (b.HotStandby ? "H" : "") + (b.Active ? "A" : ""))
+                .ToList();
+
+            var result = FormInputDialog.Execute("Save performance", "Save performance as...", _config.Performances.GetOrDefault(fkey)?.Title);
+            if (result == null)
+                return;
+
+            if (result == "")
+                _config.Performances.Remove(fkey);
+            else
+                _config.Performances[fkey] = new ConfigPerformance
+                {
+                    FKey = fkey,
+                    Title = result,
+                    Data = string.Join("|", items)
+                };
+
+            UpdatePerformances();
+            _config.Save();
+        }
+
+        public void SelectPerformance(Keys key)
+        {
+            var data = _config.Performances.GetOrDefault((int)key - (int)Keys.F1 + 1)?.Data;
+            if (string.IsNullOrEmpty(data))
+            {
+                // Not a valid hot key, disable any current indication
+                _activeHotKey = null;
+                _activeHotKeyTime = DateTime.MinValue;
+                UpdatePerformances();
+                return;
+            }
+
+            if (_activeHotKey != key)
+            {
+                // No double-press yet, select hot key and display indication
+                _activeHotKey = key;
+                _activeHotKeyTime = DateTime.Now.AddSeconds(1);
+                UpdatePerformances();
+                return;
+            }
+
+            // Double hot key press. Switch to new configuration.
+            SelectPerformance(data);
+            _activeHotKey = null;
+            _activeHotKeyTime = DateTime.MinValue;
+            UpdatePerformances();
+        }
+
+        public void SelectPerformance(string data)
+        {
+            // Reset all buttons
+            foreach (var button in _buttons)
+            {
+                button.Active = false;
+                button.HotStandby = false;
+            }
+
+            var items = data.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in items)
+            {
+                var subitems = item.Split(',');
+                if (subitems.Length != 3)
+                    continue;
+
+                int device;
+                int channel = -1;
+                var success = int.TryParse(subitems[0], out device) && int.TryParse(subitems[1], out channel);
+                if (!success)
+                    continue;
+
+                foreach (var button in _buttons.Where(x => x.Config.Device == device && x.Config.Channel == channel))
+                {
+                    button.Active = subitems[2].Contains("A");
+                    button.HotStandby = subitems[2].Contains("H");
+
+                    if (!button.Active)
+                        MidiDeviceManager.SendAllNotesOff(button.Config.Device, button.Config.Channel);
+                }
+            }
+
+            RecolorButtons();
+        }
+
+        public void UpdatePerformances()
+        {
+            if (_activeHotKey != null)
+            {
+                label1.Text = "     PRESS " + Helper.KeyToString(_activeHotKey.Value) + " AGAIN TO ACTIVATE     ";
+                label1.Font = _boldFont;
+                label1.ForeColor = Color.Black;
+                label1.BackColor = Color.Chartreuse;
+            }
+            else
+            {
+                label1.Text = string.Join("   ·   ", _config.Performances.Values.Select(x => "F" + x.FKey + " " + x.Title));
+                label1.Font = _regularFont;
+                label1.ForeColor = Color.DarkGray;
+                label1.BackColor = Color.Transparent;
+            }
         }
     }
 }

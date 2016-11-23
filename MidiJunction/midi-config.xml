@@ -1,7 +1,8 @@
-﻿<xml>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xml>
   <input-device>UM-One</input-device>
   <output-devices>
-    <device name="Midi_Reason"/>
+    <device name="Midi_Reason" />
   </output-devices>
   <default-channel>0</default-channel>
   <buttons>
@@ -9,15 +10,18 @@
     <button device="0" channel="1" name="Pop Piano" key="2" />
     <button device="0" channel="2" name="Flute" key="3" />
     <button device="0" channel="3" name="Organ" key="4" />
-    <button device="0" channel="11" name="Close Encounters" key="9" />
+    <button device="0" channel="14" name="Close Encounters" key="9" />
     <button device="0" channel="4" name="Strings" key="Q" />
     <button device="0" channel="5" name="Soft Pad" key="W" />
     <button device="0" channel="6" name="Organ Pad" key="E" />
     <button device="0" channel="7" name="Choir" key="R" />
     <button device="0" channel="8" name="Space Verb" key="T" />
     <button device="0" channel="9" name="Sweeps" key="Y" />
-    <button device="0" channel="10" name="New Organ" key="U" />
   </buttons>
+  <performances>
+    <performance fkey="1" title="Default" data="0,0,A|0,5,A" />
+    <performance fkey="2" title="Set a fire" data="0,14,H|0,4,H|0,5,A|0,7,A|0,8,HA" />
+  </performances>
   <break>
     <after>4</after>
   </break>

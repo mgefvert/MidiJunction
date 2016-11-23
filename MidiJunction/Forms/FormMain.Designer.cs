@@ -54,9 +54,11 @@ namespace MidiJunction.Forms
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.keysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutMIDIJunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label1 = new System.Windows.Forms.Label();
             this.flowButtonPanel.SuspendLayout();
             this.flowOutputDevicesPanel.SuspendLayout();
             this.menuHamburger.SuspendLayout();
@@ -107,22 +109,22 @@ namespace MidiJunction.Forms
             // 
             // flowButtonPanel
             // 
-            this.flowButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowButtonPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowButtonPanel.BackColor = System.Drawing.Color.Transparent;
             this.flowButtonPanel.Controls.Add(this.button1);
             this.flowButtonPanel.Controls.Add(this.button2);
             this.flowButtonPanel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.flowButtonPanel.Location = new System.Drawing.Point(311, 9);
             this.flowButtonPanel.Name = "flowButtonPanel";
-            this.flowButtonPanel.Size = new System.Drawing.Size(677, 72);
+            this.flowButtonPanel.Size = new System.Drawing.Size(663, 59);
             this.flowButtonPanel.TabIndex = 22;
             // 
             // focusLabel
             // 
-            this.focusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)));
+            this.focusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.focusLabel.BackColor = System.Drawing.Color.Chartreuse;
             this.focusLabel.Location = new System.Drawing.Point(14, 9);
             this.focusLabel.Name = "focusLabel";
@@ -204,8 +206,8 @@ namespace MidiJunction.Forms
             // midiInputBus
             // 
             this.midiInputBus.ActiveChannel = null;
-            this.midiInputBus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)));
+            this.midiInputBus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.midiInputBus.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.midiInputBus.BackColor = System.Drawing.Color.Transparent;
             this.midiInputBus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -221,8 +223,8 @@ namespace MidiJunction.Forms
             // 
             // flowOutputDevicesPanel
             // 
-            this.flowOutputDevicesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowOutputDevicesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowOutputDevicesPanel.BackColor = System.Drawing.Color.Transparent;
             this.flowOutputDevicesPanel.Controls.Add(this.midiBus1);
             this.flowOutputDevicesPanel.Location = new System.Drawing.Point(1047, 9);
@@ -236,7 +238,7 @@ namespace MidiJunction.Forms
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Wingdings", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.label4.ForeColor = System.Drawing.Color.DimGray;
-            this.label4.Location = new System.Drawing.Point(998, 9);
+            this.label4.Location = new System.Drawing.Point(989, 9);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 74);
             this.label4.TabIndex = 27;
@@ -282,7 +284,7 @@ namespace MidiJunction.Forms
             this.helpToolStripMenuItem,
             this.menuClose});
             this.menuHamburger.Name = "menuHamburger";
-            this.menuHamburger.Size = new System.Drawing.Size(191, 148);
+            this.menuHamburger.Size = new System.Drawing.Size(191, 126);
             // 
             // menuShowPiano
             // 
@@ -319,6 +321,7 @@ namespace MidiJunction.Forms
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showOverviewToolStripMenuItem,
+            this.keysToolStripMenuItem,
             this.aboutMIDIJunctionToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
@@ -330,6 +333,13 @@ namespace MidiJunction.Forms
             this.showOverviewToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.showOverviewToolStripMenuItem.Text = "Show &overview";
             this.showOverviewToolStripMenuItem.Click += new System.EventHandler(this.showOverviewToolStripMenuItem_Click);
+            // 
+            // keysToolStripMenuItem
+            // 
+            this.keysToolStripMenuItem.Name = "keysToolStripMenuItem";
+            this.keysToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.keysToolStripMenuItem.Text = "Keys";
+            this.keysToolStripMenuItem.Click += new System.EventHandler(this.keysToolStripMenuItem_Click);
             // 
             // aboutMIDIJunctionToolStripMenuItem
             // 
@@ -355,6 +365,20 @@ namespace MidiJunction.Forms
             this.progressBar1.TabIndex = 33;
             this.progressBar1.Value = 30;
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.DarkGray;
+            this.label1.Location = new System.Drawing.Point(314, 70);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(660, 16);
+            this.label1.TabIndex = 48;
+            this.label1.Text = "label1";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -362,6 +386,7 @@ namespace MidiJunction.Forms
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.BackgroundImage = global::MidiJunction.Properties.Resources.BackgroundImage;
             this.ClientSize = new System.Drawing.Size(1307, 90);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.labelVolume);
@@ -420,6 +445,8 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showOverviewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutMIDIJunctionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem keysToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
     }
 }
 

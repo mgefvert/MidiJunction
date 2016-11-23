@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using CommonNetTools;
+using MidiJunction.Configuration;
 using MidiJunction.Devices;
 
 // ReSharper disable LocalizableElement
@@ -67,7 +68,7 @@ namespace MidiJunction.Forms
                     return;
 
                 _buttons.Add(form.Button);
-                listView2.VirtualListSize = _devices.Count;
+                listView2.VirtualListSize = _buttons.Count;
             }
         }
 
@@ -122,7 +123,7 @@ namespace MidiJunction.Forms
             var index = listView2.SelectedIndices.Cast<int>().First();
             var button = _buttons[index].Clone();
 
-            using (var form = new FormSettingButton { Button = button, BreakAfter = _config.BreakAfter.Contains(index) })
+            using (var form = new FormSettingButton { Button = button })
             {
                 if (!form.Execute())
                     return;
@@ -131,15 +132,6 @@ namespace MidiJunction.Forms
                     return;
 
                 _buttons[index] = form.Button;
-
-                if (form.BreakAfter)
-                {
-                    if (!_config.BreakAfter.Contains(index))
-                        _config.BreakAfter.Add(index);
-                }
-                else
-                    _config.BreakAfter.Remove(index);
-
                 listView2.Invalidate();
             }
         }
@@ -163,7 +155,7 @@ namespace MidiJunction.Forms
                 ((char)(65 + button.Device)).ToString(),
                 (button.Channel + 1).ToString(),
                 button.Name,
-                _config.BreakAfter.Contains(e.ItemIndex) ? "Yes" : ""
+                Helper.EnumToString(button.BreakAfter, true)
             });
         }
 

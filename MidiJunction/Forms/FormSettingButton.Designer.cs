@@ -36,9 +36,11 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.radioNoBreak = new System.Windows.Forms.RadioButton();
+            this.radioBreakNewLine = new System.Windows.Forms.RadioButton();
+            this.radioBreakSeparator = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // cancelButton
@@ -135,16 +137,6 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "MIDI Channel";
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(28, 134);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(202, 17);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "Break to new line after this instrument";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // comboBox3
             // 
             this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -164,6 +156,39 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Key";
             // 
+            // radioNoBreak
+            // 
+            this.radioNoBreak.AutoSize = true;
+            this.radioNoBreak.Location = new System.Drawing.Point(28, 136);
+            this.radioNoBreak.Name = "radioNoBreak";
+            this.radioNoBreak.Size = new System.Drawing.Size(93, 17);
+            this.radioNoBreak.TabIndex = 11;
+            this.radioNoBreak.TabStop = true;
+            this.radioNoBreak.Text = "No break after";
+            this.radioNoBreak.UseVisualStyleBackColor = true;
+            // 
+            // radioBreakNewLine
+            // 
+            this.radioBreakNewLine.AutoSize = true;
+            this.radioBreakNewLine.Location = new System.Drawing.Point(127, 136);
+            this.radioBreakNewLine.Name = "radioBreakNewLine";
+            this.radioBreakNewLine.Size = new System.Drawing.Size(107, 17);
+            this.radioBreakNewLine.TabIndex = 12;
+            this.radioBreakNewLine.TabStop = true;
+            this.radioBreakNewLine.Text = "Break to new line";
+            this.radioBreakNewLine.UseVisualStyleBackColor = true;
+            // 
+            // radioBreakSeparator
+            // 
+            this.radioBreakSeparator.AutoSize = true;
+            this.radioBreakSeparator.Location = new System.Drawing.Point(240, 136);
+            this.radioBreakSeparator.Name = "radioBreakSeparator";
+            this.radioBreakSeparator.Size = new System.Drawing.Size(91, 17);
+            this.radioBreakSeparator.TabIndex = 13;
+            this.radioBreakSeparator.TabStop = true;
+            this.radioBreakSeparator.Text = "Use separator";
+            this.radioBreakSeparator.UseVisualStyleBackColor = true;
+            // 
             // FormSettingButton
             // 
             this.AcceptButton = this.okButton;
@@ -172,9 +197,11 @@
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(398, 225);
             this.ControlBox = false;
+            this.Controls.Add(this.radioBreakSeparator);
+            this.Controls.Add(this.radioBreakNewLine);
+            this.Controls.Add(this.radioNoBreak);
             this.Controls.Add(this.comboBox3);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.comboBox1);
@@ -204,8 +231,10 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.RadioButton radioNoBreak;
+        private System.Windows.Forms.RadioButton radioBreakNewLine;
+        private System.Windows.Forms.RadioButton radioBreakSeparator;
     }
 }
