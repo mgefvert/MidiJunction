@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace MidiJunction.Devices
 {
@@ -18,7 +19,13 @@ namespace MidiJunction.Devices
         public override void Dispose()
         {
             Closing = true;
-            WinMM.midiInStop(_handle);
+
+            WinMM.midiInReset(_handle);
+
+            // Give the device manager a chance to process current messages ... it seems like only
+            // one DoEvents() is necessary, but I don't trust it.
+            Helper.WaitALittle(TimeSpan.FromMilliseconds(100));
+
             WinMM.midiInClose(_handle);
         }
     }

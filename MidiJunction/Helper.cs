@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace MidiJunction
@@ -76,6 +77,16 @@ namespace MidiJunction
         public static string EnumToString<T>(T value, bool hideDefault) where T : struct
         {
             return value.Equals(default(T)) ? "" : value.ToString();
+        }
+
+        public static void WaitALittle(TimeSpan wait)
+        {
+            var target = DateTime.Now.Add(wait);
+            while (DateTime.Now < target)
+            {
+                Application.DoEvents();
+                Thread.Sleep(10);
+            }
         }
     }
 }

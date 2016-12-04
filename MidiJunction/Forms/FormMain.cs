@@ -138,17 +138,14 @@ namespace MidiJunction.Forms
         {
             MidiDeviceManager.Shutdown();
             timer1.Enabled = false;
-
             _closing = true;
+
+            // Give things a chance to settle down.
+            Helper.WaitALittle(TimeSpan.FromMilliseconds(500));
+
             _formSettings.Close();
             _formTracing.Close();
             _formKeyboard.Close();
-
-            for (var i = 0; i < 10; i++)
-            {
-                Application.DoEvents();
-                Thread.Sleep(10);
-            }
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -227,6 +224,7 @@ namespace MidiJunction.Forms
             flowButtonPanel.Controls.Clear();
 
             var first = true;
+            _buttons.Clear();
             foreach (var c in _config.Buttons)
             {
                 var bi = new ButtonInfo
@@ -374,7 +372,8 @@ namespace MidiJunction.Forms
         {
             Invoke((Action) delegate
             {
-                _buttons.ForEach(x => x.Recolor());
+                foreach(var button in _buttons)
+                    button.Recolor();
             });
         }
 
