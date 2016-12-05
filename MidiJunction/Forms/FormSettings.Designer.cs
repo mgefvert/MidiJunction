@@ -58,6 +58,7 @@ namespace MidiJunction.Forms
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.midiChannel)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,7 +75,7 @@ namespace MidiJunction.Forms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(15, 55);
+            this.label2.Location = new System.Drawing.Point(16, 51);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(149, 13);
             this.label2.TabIndex = 2;
@@ -82,7 +83,7 @@ namespace MidiJunction.Forms
             // 
             // midiChannel
             // 
-            this.midiChannel.Location = new System.Drawing.Point(18, 71);
+            this.midiChannel.Location = new System.Drawing.Point(218, 49);
             this.midiChannel.Maximum = new decimal(new int[] {
             16,
             0,
@@ -94,7 +95,7 @@ namespace MidiJunction.Forms
             0,
             0});
             this.midiChannel.Name = "midiChannel";
-            this.midiChannel.Size = new System.Drawing.Size(79, 22);
+            this.midiChannel.Size = new System.Drawing.Size(98, 22);
             this.midiChannel.TabIndex = 3;
             this.midiChannel.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.midiChannel.Value = new decimal(new int[] {
@@ -106,11 +107,11 @@ namespace MidiJunction.Forms
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(208, 55);
+            this.label3.Location = new System.Drawing.Point(15, 80);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(215, 13);
+            this.label3.Size = new System.Drawing.Size(187, 13);
             this.label3.TabIndex = 4;
-            this.label3.Text = "MIDI Input Device (partial name allowed)";
+            this.label3.Text = "MIDI Input Device (partial name ok)";
             // 
             // label4
             // 
@@ -124,9 +125,9 @@ namespace MidiJunction.Forms
             // inputDevice
             // 
             this.inputDevice.FormattingEnabled = true;
-            this.inputDevice.Location = new System.Drawing.Point(211, 70);
+            this.inputDevice.Location = new System.Drawing.Point(218, 77);
             this.inputDevice.Name = "inputDevice";
-            this.inputDevice.Size = new System.Drawing.Size(205, 21);
+            this.inputDevice.Size = new System.Drawing.Size(147, 21);
             this.inputDevice.TabIndex = 7;
             // 
             // okButton
@@ -350,6 +351,16 @@ namespace MidiJunction.Forms
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.MoveInstrumentUp);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(383, 50);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(144, 30);
+            this.checkBox1.TabIndex = 85;
+            this.checkBox1.Text = "Send control messages\r\non all channels";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // FormSettings
             // 
             this.AcceptButton = this.okButton;
@@ -357,6 +368,7 @@ namespace MidiJunction.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(567, 592);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button8);
@@ -423,5 +435,6 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

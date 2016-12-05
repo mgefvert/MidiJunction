@@ -23,6 +23,7 @@ namespace MidiJunction.Configuration
         public List<string> OutputDevices { get; } = new List<string>();
         public List<ConfigButton> Buttons { get; } = new List<ConfigButton>();
         public int DefaultChannel { get; set; }
+        public bool ControlOnAllChannels { get; set; }
         public Dictionary<int, ConfigPerformance> Performances = new Dictionary<int, ConfigPerformance>(); 
 
         public event EventHandler Updated;
@@ -95,6 +96,7 @@ namespace MidiJunction.Configuration
             }
 
             DefaultChannel = Helper.Limit(xml.Element("default-channel")?.Value.ParseInt() ?? 0, 0, 15);
+            ControlOnAllChannels = (xml.Element("control-all-channels")?.Value.ParseInt() ?? 0) != 0;
         }
 
         public void Save()
@@ -119,7 +121,8 @@ namespace MidiJunction.Configuration
                 new XElement("output-devices", outputDevices),
                 new XElement("default-channel", DefaultChannel),
                 new XElement("buttons", buttons),
-                new XElement("performances", performances)
+                new XElement("performances", performances),
+                new XElement("control-all-channels", ControlOnAllChannels ? 1 : 0)
               )
             );
 

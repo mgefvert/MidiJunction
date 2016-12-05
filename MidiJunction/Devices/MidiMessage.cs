@@ -85,6 +85,7 @@ namespace MidiJunction.Devices
         public uint Value { get; set; }
         public DateTime Time { get; set; }
 
+        public bool IsControlMessage => (Status & 0xF0u) == 0xB0u && Data1 < 120;
         public bool IsChannelMessage => (Status & 0xF0u) != 0xF0u;
         public bool IsSystemMessage => (Status & 0xF0u) == 0xF0u;
         public bool IsValid => Status >= 0x80u && Data1 < 0x80u && Data2 < 0x80u;

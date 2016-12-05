@@ -83,6 +83,7 @@ namespace MidiJunction.Forms
             _config.Buttons.AddRange(_buttons);
             _config.DefaultChannel = Helper.Limit((int)midiChannel.Value - 1, 0, 15);
             _config.InputDevice = inputDevice.Text.Trim();
+            _config.ControlOnAllChannels = checkBox1.Checked;
             _config.OutputDevices.Clear();
             _config.OutputDevices.AddRange(_devices);
             _config.Save();
@@ -260,6 +261,7 @@ namespace MidiJunction.Forms
 
             midiChannel.Value = Helper.Limit(_config.DefaultChannel + 1, 1, 16);
             inputDevice.Text = _config.InputDevice;
+            checkBox1.Checked = _config.ControlOnAllChannels;
 
             inputDevice.Items.Clear();
             for (int i = 0; i < MidiDeviceManager.InDeviceCount; i++)

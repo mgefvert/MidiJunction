@@ -336,12 +336,18 @@ namespace MidiJunction.Forms
 
             // Start by outputting the data - as low latency as possible
             if (msg.Channel == _currentChannel)
-                foreach (var info in _buttons.Where(x => x.Active))
+            {
+                var channels = msg.IsControlMessage && _config.ControlOnAllChannels
+                    ? _buttons
+                    : _buttons.Where(x => x.Active).ToList();
+
+                foreach (var info in channels)
                 {
-                    msg.Channel = (byte)info.Config.Channel;
+                    msg.Channel = (byte) info.Config.Channel;
                     MidiDeviceManager.OutputDevices.ElementAtOrDefault(info.Config.Device)?.SendCommand(msg);
                     highlight.Add(new Tuple<int, int>(info.Config.Device, info.Config.Channel));
                 }
+            }
 
             // Update UI
             midiInputBus.TriggerChannel(inChannel);
