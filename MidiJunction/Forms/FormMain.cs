@@ -394,9 +394,6 @@ namespace MidiJunction.Forms
             MidiDeviceManager.SendAllNotesOff();
             _formKeyboard.Piano.ClearAllKeys();
 
-            if (_buttons.Any())
-                _buttons.First().Active = true;
-
             RecolorButtons();
         }
 
@@ -622,6 +619,11 @@ namespace MidiJunction.Forms
 
         public void UpdatePerformances()
         {
+            var performances = _config.Performances
+                .OrderBy(x => x.Key)
+                .Select(x => x.Value)
+                .ToList();
+
             if (_activeHotKey != null)
             {
                 label1.Text = "     PRESS " + Helper.KeyToString(_activeHotKey.Value) + " AGAIN TO ACTIVATE     ";
@@ -631,7 +633,7 @@ namespace MidiJunction.Forms
             }
             else
             {
-                label1.Text = string.Join("   ·   ", _config.Performances.Values.Select(x => "F" + x.FKey + " " + x.Title));
+                label1.Text = string.Join("   ·   ", performances.Select(x => "F" + x.FKey + " " + x.Title));
                 label1.Font = _regularFont;
                 label1.ForeColor = Color.DarkGray;
                 label1.BackColor = Color.Transparent;
