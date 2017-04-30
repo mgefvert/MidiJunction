@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CommonNetTools;
+using DotNetCommons;
 using MidiJunction.Configuration;
 using MidiJunction.Controls;
 using MidiJunction.Devices;
@@ -427,6 +427,7 @@ namespace MidiJunction.Forms
             if (IsDisposed || _closing)
                 return;
 
+            timer1.Enabled = false;
             try
             {
                 var ticks = DateTime.Now.Millisecond;
@@ -436,7 +437,7 @@ namespace MidiJunction.Forms
                     control.Tick();
 
                 // Update volume indicator
-                var v = ((int)_volume.GetVolume());
+                var v = ((int) _volume.GetVolume());
                 labelVolume.Text = v.ToString();
                 progressBar1.Value = v;
 
@@ -458,11 +459,17 @@ namespace MidiJunction.Forms
 
                 MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
                 midiInputBus.Title = MidiDeviceManager.InputDevice?.Name ?? _config.InputDevice;
-                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput ? Color.Transparent : (ticks < 700 ? Color.Red : Color.Transparent);
+                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput
+                    ? Color.Transparent
+                    : (ticks < 700 ? Color.Red : Color.Transparent);
             }
             catch
             {
                 //
+            }
+            finally
+            {
+                timer1.Enabled = true;
             }
         }
 

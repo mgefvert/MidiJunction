@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using CommonNetTools;
+using DotNetCommons;
 
 namespace MidiJunction.Configuration
 {

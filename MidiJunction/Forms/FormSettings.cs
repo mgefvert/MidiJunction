@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using CommonNetTools;
+using DotNetCommons;
 using MidiJunction.Configuration;
 using MidiJunction.Devices;
 

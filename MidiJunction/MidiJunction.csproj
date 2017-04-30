@@ -210,9 +210,9 @@
     <Content Include="Images\piano.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonNetTools\CommonNetTools\CommonNetTools.csproj">
-      <Project>{a86d8b8b-d601-4eb9-aa0a-e03372acc104}</Project>
-      <Name>CommonNetTools</Name>
+    <ProjectReference Include="..\..\DotNetCommons\DotNetCommons\DotNetCommons.csproj">
+      <Project>{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}</Project>
+      <Name>DotNetCommons</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

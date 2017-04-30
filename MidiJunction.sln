@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiJunction", "MidiJunction\MidiJunction.csproj", "{D0FD7AE6-2D68-4DA4-B363-CEE205844898}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonNetTools", "..\CommonNetTools\CommonNetTools\CommonNetTools.csproj", "{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCommons", "..\DotNetCommons\DotNetCommons\DotNetCommons.csproj", "{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
