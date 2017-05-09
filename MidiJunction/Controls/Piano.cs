@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using MidiJunction.Devices;
 
 namespace MidiJunction.Controls
 {
@@ -17,6 +18,8 @@ namespace MidiJunction.Controls
         private float _whiteKeyWidth;
 
         private readonly byte[] _keyDown = new byte[128];
+
+        public event MidiMessageHandler Message;
 
         public Piano()
         {
@@ -188,6 +191,57 @@ namespace MidiJunction.Controls
               (int)(normal.G * mixinv + downColor.G * mix),
               (int)(normal.B * mixinv + downColor.B * mix)
             ));
+        }
+
+        private int MidiNoteFromClick(Point point)
+        {
+            // Did we click a black key?
+            for (var i = 0; i < WhiteKeys; i++)
+            {
+                var r = BlackKeyRect(i);
+                if (r != null && r.Value.Contains(point))
+                    return NoteIndex(i, true);
+            }
+
+            // Did we click a white key?
+            for (var i = 0; i < WhiteKeys; i++)
+            {
+                var r = WhiteKeyRect(i);
+                if (r.Contains(point))
+                    return NoteIndex(i, false);
+            }
+
+            return -1;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            var note = MidiNoteFromClick(e.Location);
+            if (note == -1)
+                return;
+
+            var channel = Program.MainForm.CurrentChannel;
+            Message?.Invoke(this, new MidiMessageEventArgs(0, MidiMessage.NoteOn(channel, note, 0x50)));
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            var note = MidiNoteFromClick(e.Location);
+            if (note == -1)
+                return;
+
+            var channel = Program.MainForm.CurrentChannel;
+            Message?.Invoke(this, new MidiMessageEventArgs(0, MidiMessage.NoteOff(channel, note, 0)));
         }
     }
 }

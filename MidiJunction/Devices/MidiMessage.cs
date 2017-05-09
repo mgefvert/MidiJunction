@@ -94,6 +94,7 @@ namespace MidiJunction.Devices
 
         public bool IsNoteOffMessage => (Status & 0xF0u) == 0x80u;
         public bool IsNoteOnMessage => (Status & 0xF0u) == 0x90u;
+        public bool IsNoteMessage => IsNoteOnMessage || IsNoteOffMessage;
 
         public MidiMessage()
         {

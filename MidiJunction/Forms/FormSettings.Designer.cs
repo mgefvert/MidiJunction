@@ -59,6 +59,7 @@ namespace MidiJunction.Forms
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.midiChannel)).BeginInit();
             this.SuspendLayout();
             // 
@@ -133,7 +134,7 @@ namespace MidiJunction.Forms
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(383, 546);
+            this.okButton.Location = new System.Drawing.Point(470, 555);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(78, 25);
             this.okButton.TabIndex = 67;
@@ -144,7 +145,7 @@ namespace MidiJunction.Forms
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(467, 546);
+            this.cancelButton.Location = new System.Drawing.Point(554, 555);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 25);
             this.cancelButton.TabIndex = 68;
@@ -172,7 +173,7 @@ namespace MidiJunction.Forms
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(18, 127);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(443, 118);
+            this.listView1.Size = new System.Drawing.Size(530, 118);
             this.listView1.TabIndex = 73;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -205,7 +206,7 @@ namespace MidiJunction.Forms
             this.listView2.HideSelection = false;
             this.listView2.Location = new System.Drawing.Point(18, 275);
             this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(443, 252);
+            this.listView2.Size = new System.Drawing.Size(530, 261);
             this.listView2.TabIndex = 74;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
@@ -240,7 +241,7 @@ namespace MidiJunction.Forms
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(467, 127);
+            this.button1.Location = new System.Drawing.Point(554, 127);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 75;
@@ -251,7 +252,7 @@ namespace MidiJunction.Forms
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(467, 156);
+            this.button2.Location = new System.Drawing.Point(554, 156);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 76;
@@ -262,7 +263,7 @@ namespace MidiJunction.Forms
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(467, 185);
+            this.button3.Location = new System.Drawing.Point(554, 185);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 77;
@@ -273,7 +274,7 @@ namespace MidiJunction.Forms
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(467, 333);
+            this.button4.Location = new System.Drawing.Point(554, 333);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 80;
@@ -284,7 +285,7 @@ namespace MidiJunction.Forms
             // button5
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(467, 304);
+            this.button5.Location = new System.Drawing.Point(554, 304);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 79;
@@ -295,7 +296,7 @@ namespace MidiJunction.Forms
             // button6
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button6.Location = new System.Drawing.Point(467, 275);
+            this.button6.Location = new System.Drawing.Point(554, 275);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 78;
@@ -307,7 +308,7 @@ namespace MidiJunction.Forms
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button7.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.button7.Location = new System.Drawing.Point(467, 214);
+            this.button7.Location = new System.Drawing.Point(554, 214);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(35, 21);
             this.button7.TabIndex = 81;
@@ -319,7 +320,7 @@ namespace MidiJunction.Forms
             // 
             this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button8.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.button8.Location = new System.Drawing.Point(507, 214);
+            this.button8.Location = new System.Drawing.Point(594, 214);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(35, 21);
             this.button8.TabIndex = 82;
@@ -331,7 +332,7 @@ namespace MidiJunction.Forms
             // 
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.button9.Location = new System.Drawing.Point(507, 362);
+            this.button9.Location = new System.Drawing.Point(594, 362);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(35, 21);
             this.button9.TabIndex = 84;
@@ -343,7 +344,7 @@ namespace MidiJunction.Forms
             // 
             this.button10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button10.Font = new System.Drawing.Font("Wingdings 3", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.button10.Location = new System.Drawing.Point(467, 362);
+            this.button10.Location = new System.Drawing.Point(554, 362);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(35, 21);
             this.button10.TabIndex = 83;
@@ -354,12 +355,22 @@ namespace MidiJunction.Forms
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(383, 50);
+            this.checkBox1.Location = new System.Drawing.Point(394, 49);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(144, 30);
+            this.checkBox1.Size = new System.Drawing.Size(225, 17);
             this.checkBox1.TabIndex = 85;
-            this.checkBox1.Text = "Send control messages\r\non all channels";
+            this.checkBox1.Text = "Send control messages on all channels";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(394, 72);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(237, 17);
+            this.checkBox2.TabIndex = 86;
+            this.checkBox2.Text = "Use lowest piano keys to control hotkeys";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // FormSettings
             // 
@@ -367,7 +378,8 @@ namespace MidiJunction.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(567, 592);
+            this.ClientSize = new System.Drawing.Size(654, 601);
+            this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button10);
@@ -436,5 +448,6 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }

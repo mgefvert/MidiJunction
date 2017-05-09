@@ -44,30 +44,57 @@ namespace MidiJunction.Forms
 
         public class ButtonInfo
         {
+            private readonly Bitmap _bkgStandby1 = Helper.MakeBackground(StandbyColor);
+            private readonly Bitmap _bkgStandby2 = Helper.MakeBackground(StandbyColor, 12);
+            private readonly Bitmap _bkgStandby3 = Helper.MakeBackground(StandbyColor, 6);
+
             public ConfigButton Config { get; set; }
             public Button Button { get; set; }
             public Keys Key => Config.Key;
             public bool Active { get; set; }
-            public bool HotStandby { get; set; }
+            public int HotStandby { get; set; }
 
             public void Click()
             {
                 Button.PerformClick();
             }
 
-            public void ToggleStandby()
-            {
-                HotStandby = !HotStandby;
-            }
-
             public void Recolor()
             {
-                Button.BackColor = Active ? Color.Chartreuse : (HotStandby ? HotStandbyColor : Color.Transparent);
                 Button.ForeColor = Active ? Color.Black : Color.White;
+
+                if (Active)
+                {
+                    Button.BackgroundImage = null;
+                    Button.BackColor = Color.Chartreuse;
+                    return;
+                }
+
+                Button.BackColor = Color.Transparent;
+                if (HotStandby == 0)
+                {
+                    Button.BackgroundImage = null;
+                    return;
+                }
+
+                switch (HotStandby)
+                {
+                    case 2:
+                        Button.BackgroundImage = _bkgStandby2;
+                        break;
+                    case 3:
+                        Button.BackgroundImage = _bkgStandby3;
+                        break;
+                    default:
+                        Button.BackgroundImage = _bkgStandby1;
+                        break;
+                }
             }
         }
 
-        private static readonly Color HotStandbyColor = Helper.Mix(Color.DodgerBlue, Color.FromArgb(51, 51, 51), 50);
+        private static readonly Color DarkGray = Color.FromArgb(51, 51, 51);
+        private static readonly Color StandbyColor = Helper.Mix(Color.DodgerBlue, DarkGray, 50);
+
         private readonly Font _regularFont;
         private readonly Font _boldFont;
 
@@ -83,6 +110,9 @@ namespace MidiJunction.Forms
         private bool _midiInitialized;
         private Keys? _activeHotKey;
         private DateTime _activeHotKeyTime;
+        private readonly List<int> _hotStandby = new List<int>();
+
+        public int CurrentChannel => _currentChannel;
 
         public FormMain()
         {
@@ -96,7 +126,10 @@ namespace MidiJunction.Forms
 
             _formSettings = new FormSettings(_config);
             _formTracing = new FormMessageTrace();
+
             _formKeyboard = new FormKeyboard();
+            _formKeyboard.Piano.Message += DeviceMessage;
+
             _volume = new SystemVolume();
 
             _keyMap.AddRange(new[]
@@ -120,9 +153,9 @@ namespace MidiJunction.Forms
 
                 // A-Z, 0-9 keys for switching instruments
                 new KeyMapEntry(Keys.A, Keys.Z, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
-                new KeyMapEntry(Keys.A, Keys.Z, true, keys => { _buttons.FirstOrDefault(x => x.Key == keys)?.ToggleStandby(); RecolorButtons(); }),
+                new KeyMapEntry(Keys.A, Keys.Z, true, keys => { ToggleStandby(_buttons.FirstOrDefault(x => x.Key == keys)); RecolorButtons(); }),
                 new KeyMapEntry(Keys.D0, Keys.D9, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
-                new KeyMapEntry(Keys.D0, Keys.D9, true, keys => { _buttons.FirstOrDefault(x => x.Key == keys)?.ToggleStandby(); RecolorButtons(); }),
+                new KeyMapEntry(Keys.D0, Keys.D9, true, keys => { ToggleStandby(_buttons.FirstOrDefault(x => x.Key == keys)); RecolorButtons(); }),
             });
 
             RegisterAppBar();
@@ -130,7 +163,27 @@ namespace MidiJunction.Forms
 
         private void PerformHotSwitch()
         {
-            foreach (var b in _buttons.Where(x => x.HotStandby))
+            var current = _hotStandby.Any() ? _hotStandby.Max() : 0;
+            var max = _buttons.Max(x => x.HotStandby);
+
+            if (current < max)
+                PerformHotSwitch(current + 1);
+            else
+            {
+                // Turn off all active standby modes
+                foreach(var n in _hotStandby.ToList())
+                    PerformHotSwitch(n);
+            }
+        }
+
+        private void PerformHotSwitch(int standby)
+        {
+            if (_hotStandby.Contains(standby))
+                _hotStandby.Remove(standby);
+            else
+                _hotStandby.Add(standby);
+
+            foreach (var b in _buttons.Where(x => x.HotStandby == standby))
                 b.Button.PerformClick();
         }
 
@@ -232,7 +285,7 @@ namespace MidiJunction.Forms
                     Button = new Button
                     {
                         Text = (c.Key == Keys.None ? "·" : Helper.KeyToString(c.Key)) + " " + c.Name,
-                        BackColor = Color.FromArgb(51, 51, 51),
+                        BackColor = DarkGray,
                         FlatStyle = FlatStyle.Flat,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
@@ -278,6 +331,40 @@ namespace MidiJunction.Forms
             GC.Collect();
         }
 
+        public void ToggleStandby(ButtonInfo info)
+        {
+            if (info == null)
+                return;
+
+            // If the button has no standby, just increase to the first level.
+            if (info.HotStandby == 0)
+            {
+                info.HotStandby = 1;
+                return;
+            }
+
+            // Figure out the maximum standby level and how many buttons have that.
+            var maxStandbyLevel = _buttons.Max(x => x.HotStandby);
+            var maxStandbyCount = _buttons.Count(x => x.HotStandby == maxStandbyLevel);
+
+            // Less than maximum? 
+            if (info.HotStandby < maxStandbyLevel)
+            {
+                info.HotStandby++;
+                return;
+            }
+
+            // If we're already at maximum, or we're the only button at this level, wrap bac to zero.
+            if (maxStandbyCount == 1 || maxStandbyLevel >= 3)
+            {
+                info.HotStandby = 0;
+                return;
+            }
+
+            // We're not at maximum and there is another button with our level. Increase by one.
+            info.HotStandby++;
+        }
+
         private Control NewLabelSeparator(int height)
         {
             return new Label
@@ -316,7 +403,7 @@ namespace MidiJunction.Forms
             if (info == null)
                 return;
 
-            info.HotStandby = !info.HotStandby;
+            ToggleStandby(info);
             RecolorButtons();
         }
 
@@ -337,6 +424,15 @@ namespace MidiJunction.Forms
             // Start by outputting the data - as low latency as possible
             if (msg.Channel == _currentChannel)
             {
+                if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && msg.Data1 >= 21 && msg.Data1 <= 23)
+                {
+                    if (!msg.IsNoteOnMessage)
+                        return;
+
+                    PerformHotSwitch(msg.Data1 - 20);
+                    return;
+                }
+
                 var channels = msg.IsControlMessage && _config.ControlOnAllChannels
                     ? _buttons
                     : _buttons.Where(x => x.Active).ToList();
@@ -388,7 +484,7 @@ namespace MidiJunction.Forms
             foreach (var button in _buttons)
             {
                 button.Active = false;
-                button.HotStandby = false;
+                button.HotStandby = 0;
             }
 
             MidiDeviceManager.SendAllNotesOff();
@@ -539,8 +635,8 @@ namespace MidiJunction.Forms
                 return;
 
             var items = _buttons
-                .Where(button => button.Active || button.HotStandby)
-                .Select(b => b.Config.Device + "," + b.Config.Channel + "," + (b.HotStandby ? "H" : "") + (b.Active ? "A" : ""))
+                .Where(button => button.Active || button.HotStandby != 0)
+                .Select(b => b.Config.Device + "," + b.Config.Channel + "," + (b.Active ? "A" : "") + b.HotStandby)
                 .ToList();
 
             var result = FormInputDialog.Execute("Save performance", "Save performance as...", _config.Performances.GetOrDefault(fkey)?.Title);
@@ -595,7 +691,7 @@ namespace MidiJunction.Forms
             foreach (var button in _buttons)
             {
                 button.Active = false;
-                button.HotStandby = false;
+                button.HotStandby = 0;
             }
 
             var items = data.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -605,16 +701,15 @@ namespace MidiJunction.Forms
                 if (subitems.Length != 3)
                     continue;
 
-                int device;
-                int channel = -1;
-                var success = int.TryParse(subitems[0], out device) && int.TryParse(subitems[1], out channel);
+                var channel = -1;
+                var success = int.TryParse(subitems[0], out int device) && int.TryParse(subitems[1], out channel);
                 if (!success)
                     continue;
 
                 foreach (var button in _buttons.Where(x => x.Config.Device == device && x.Config.Channel == channel))
                 {
                     button.Active = subitems[2].Contains("A");
-                    button.HotStandby = subitems[2].Contains("H");
+                    button.HotStandby = ExtractStandbyNumber(subitems[2]);
 
                     if (!button.Active)
                         MidiDeviceManager.SendAllNotesOff(button.Config.Device, button.Config.Channel);
@@ -622,6 +717,18 @@ namespace MidiJunction.Forms
             }
 
             RecolorButtons();
+        }
+
+        private int ExtractStandbyNumber(string s)
+        {
+            var number = string.Join("", s.ToCharArray().Where(char.IsDigit));
+            if (string.IsNullOrEmpty(number))
+                return 0;
+
+            if (!int.TryParse(s, out var n))
+                return 0;
+
+            return Helper.Limit(n, 0, 3);
         }
 
         public void UpdatePerformances()
