@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 // ReSharper disable InconsistentNaming
 
-namespace MidiJunction
+namespace MidiJunction.Classes
 {
     public class AppBarForm : Form
     {

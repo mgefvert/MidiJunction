@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using DotNetCommons;
+using MidiJunction.Classes;
 
 namespace MidiJunction.Configuration
 {

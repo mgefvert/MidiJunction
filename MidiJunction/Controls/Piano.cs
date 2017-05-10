@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using MidiJunction.Devices;
+using MidiJunction.Classes;
 
 namespace MidiJunction.Controls
 {
@@ -18,8 +18,6 @@ namespace MidiJunction.Controls
         private float _whiteKeyWidth;
 
         private readonly byte[] _keyDown = new byte[128];
-
-        public event MidiMessageHandler Message;
 
         public Piano()
         {
@@ -225,8 +223,7 @@ namespace MidiJunction.Controls
             if (note == -1)
                 return;
 
-            var channel = Program.MainForm.CurrentChannel;
-            Message?.Invoke(this, new MidiMessageEventArgs(0, MidiMessage.NoteOn(channel, note, 0x50)));
+            NoteManager.TurnNoteOn(note, 0x50);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -240,8 +237,7 @@ namespace MidiJunction.Controls
             if (note == -1)
                 return;
 
-            var channel = Program.MainForm.CurrentChannel;
-            Message?.Invoke(this, new MidiMessageEventArgs(0, MidiMessage.NoteOff(channel, note, 0)));
+            NoteManager.TurnNoteOff(note);
         }
     }
 }

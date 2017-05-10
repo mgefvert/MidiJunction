@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using MidiJunction.Classes;
 using MidiJunction.Configuration;
 
 namespace MidiJunction.Forms

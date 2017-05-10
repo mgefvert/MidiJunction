@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace MidiJunction
+namespace MidiJunction.Classes
 {
     public static class Helper
     {

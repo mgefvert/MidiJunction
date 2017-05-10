@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DotNetCommons;
+using MidiJunction.Classes;
 using MidiJunction.Configuration;
 using MidiJunction.Controls;
 using MidiJunction.Devices;
@@ -17,83 +18,7 @@ namespace MidiJunction.Forms
 {
     public partial class FormMain : AppBarForm
     {
-        public class KeyMapEntry
-        {
-            public Keys StartKey { get; }
-            public Keys EndKey { get; }
-            public bool Shift { get; }
-            public Action<Keys> Action { get; }
-
-            public KeyMapEntry(Keys startKey, Keys endKey, bool shift, Action<Keys> action)
-            {
-                StartKey = startKey;
-                EndKey = endKey;
-                Shift = shift;
-                Action = action;
-            }
-
-            public KeyMapEntry(Keys key, bool shift, Action<Keys> action) : this(key, key, shift, action)
-            {
-            }
-
-            public bool Match(Keys key, bool shift)
-            {
-                return key >= StartKey && key <= EndKey && shift == Shift;
-            }
-        }
-
-        public class ButtonInfo
-        {
-            private readonly Bitmap _bkgStandby1 = Helper.MakeBackground(StandbyColor);
-            private readonly Bitmap _bkgStandby2 = Helper.MakeBackground(StandbyColor, 12);
-            private readonly Bitmap _bkgStandby3 = Helper.MakeBackground(StandbyColor, 6);
-
-            public ConfigButton Config { get; set; }
-            public Button Button { get; set; }
-            public Keys Key => Config.Key;
-            public bool Active { get; set; }
-            public int HotStandby { get; set; }
-
-            public void Click()
-            {
-                Button.PerformClick();
-            }
-
-            public void Recolor()
-            {
-                Button.ForeColor = Active ? Color.Black : Color.White;
-
-                if (Active)
-                {
-                    Button.BackgroundImage = null;
-                    Button.BackColor = Color.Chartreuse;
-                    return;
-                }
-
-                Button.BackColor = Color.Transparent;
-                if (HotStandby == 0)
-                {
-                    Button.BackgroundImage = null;
-                    return;
-                }
-
-                switch (HotStandby)
-                {
-                    case 2:
-                        Button.BackgroundImage = _bkgStandby2;
-                        break;
-                    case 3:
-                        Button.BackgroundImage = _bkgStandby3;
-                        break;
-                    default:
-                        Button.BackgroundImage = _bkgStandby1;
-                        break;
-                }
-            }
-        }
-
         private static readonly Color DarkGray = Color.FromArgb(51, 51, 51);
-        private static readonly Color StandbyColor = Helper.Mix(Color.DodgerBlue, DarkGray, 50);
 
         private readonly Font _regularFont;
         private readonly Font _boldFont;
@@ -106,30 +31,29 @@ namespace MidiJunction.Forms
         private readonly FormSettings _formSettings;
         private readonly FormMessageTrace _formTracing;
         private bool _closing;
-        private int _currentChannel;
         private bool _midiInitialized;
         private Keys? _activeHotKey;
         private DateTime _activeHotKeyTime;
         private readonly List<int> _hotStandby = new List<int>();
 
-        public int CurrentChannel => _currentChannel;
+        public int CurrentChannel => NoteManager.CurrentChannel;
 
         public FormMain()
         {
             InitializeComponent();
 
+            NoteManager.MidiMessage += DeviceMessage;
+
             _regularFont = new Font(label1.Font, FontStyle.Regular);
             _boldFont = new Font(label1.Font, FontStyle.Bold);
 
+            labelChord.Text = "";
             label1.Text = "";
             _config.Updated += (sender, args) => InitializeFromConfig();
 
             _formSettings = new FormSettings(_config);
             _formTracing = new FormMessageTrace();
-
             _formKeyboard = new FormKeyboard();
-            _formKeyboard.Piano.Message += DeviceMessage;
-
             _volume = new SystemVolume();
 
             _keyMap.AddRange(new[]
@@ -176,14 +100,14 @@ namespace MidiJunction.Forms
             }
         }
 
-        private void PerformHotSwitch(int standby)
+        private void PerformHotSwitch(int standbyNote)
         {
-            if (_hotStandby.Contains(standby))
-                _hotStandby.Remove(standby);
+            if (_hotStandby.Contains(standbyNote))
+                _hotStandby.Remove(standbyNote);
             else
-                _hotStandby.Add(standby);
+                _hotStandby.Add(standbyNote);
 
-            foreach (var b in _buttons.Where(x => x.HotStandby == standby))
+            foreach (var b in _buttons.Where(x => x.HotStandby == standbyNote))
                 b.Button.PerformClick();
         }
 
@@ -244,90 +168,99 @@ namespace MidiJunction.Forms
             if (_closing)
                 return;
 
-            // Set up input device
-            midiInputBus.Text = _config.InputDevice;
-            UpdatePerformances();
-
-            if (!_midiInitialized)
+            SuspendLayout();
+            try
             {
-                // Create flow output devices
-                var outputs = flowOutputDevicesPanel.Controls.OfType<MidiBus>().ToList();
-                foreach (var output in outputs)
-                    flowOutputDevicesPanel.Controls.Remove(output);
+                // Set up input device
+                midiInputBus.Text = _config.InputDevice;
+                UpdatePerformances();
 
-                var outputCount = _config.OutputDevices.Count;
-                foreach (var output in _config.OutputDevices)
+                if (!_midiInitialized)
                 {
-                    var bus = new MidiBus
-                    {
-                        Title = output,
-                        TitleColor = Color.Transparent,
-                        ForeColor = Color.White,
-                        BackColor = Color.Transparent,
-                        Width = flowOutputDevicesPanel.Width,
-                        Height = outputCount > 2 ? 20 : 30
-                    };
+                    // Create flow output devices
+                    var outputs = flowOutputDevicesPanel.Controls.OfType<MidiBus>().ToList();
+                    foreach (var output in outputs)
+                        flowOutputDevicesPanel.Controls.Remove(output);
 
-                    flowOutputDevicesPanel.Controls.Add(bus);
-                    flowOutputDevicesPanel.SetFlowBreak(bus, true);
+                    var outputCount = _config.OutputDevices.Count;
+                    foreach (var output in _config.OutputDevices)
+                    {
+                        var bus = new MidiBus
+                        {
+                            Title = output,
+                            TitleColor = Color.Transparent,
+                            ForeColor = Color.White,
+                            BackColor = Color.Transparent,
+                            Width = flowOutputDevicesPanel.Width,
+                            Height = outputCount > 2 ? 20 : 30
+                        };
+
+                        flowOutputDevicesPanel.Controls.Add(bus);
+                        flowOutputDevicesPanel.SetFlowBreak(bus, true);
+                    }
                 }
-            }
 
-            // Create flow buttons
-            flowButtonPanel.Controls.Clear();
+                // Create flow buttons
+                flowButtonPanel.Controls.Clear();
 
-            var first = true;
-            _buttons.Clear();
-            foreach (var c in _config.Buttons)
-            {
-                var bi = new ButtonInfo
+                var first = true;
+                _buttons.Clear();
+                foreach (var c in _config.Buttons)
                 {
-                    Button = new Button
+                    var bi = new ButtonInfo
                     {
-                        Text = (c.Key == Keys.None ? "·" : Helper.KeyToString(c.Key)) + " " + c.Name,
-                        BackColor = DarkGray,
-                        FlatStyle = FlatStyle.Flat,
-                        AutoSize = true,
-                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = { BorderColor = Color.Gray, MouseOverBackColor = Color.DodgerBlue },
-                        TabStop = false,
-                        ForeColor = Color.White,
-                    },
-                    Config = c,
-                    Active = first
-                };
-                bi.Button.Click += ChannelButtonClick;
-                bi.Button.MouseDown += ChannelButtonMouseClick;
+                        Button = new Button
+                        {
+                            Text = (c.Key == Keys.None ? "·" : Helper.KeyToString(c.Key)) + " " + c.Name,
+                            BackColor = DarkGray,
+                            FlatStyle = FlatStyle.Flat,
+                            AutoSize = true,
+                            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                            FlatAppearance = { BorderColor = Color.Gray, MouseOverBackColor = Color.DodgerBlue },
+                            TabStop = false,
+                            ForeColor = Color.White,
+                        },
+                        Config = c,
+                        Active = first
+                    };
+                    bi.Button.Click += ChannelButtonClick;
+                    bi.Button.MouseDown += ChannelButtonMouseClick;
 
-                _buttons.Add(bi);
-                flowButtonPanel.Controls.Add(bi.Button);
+                    _buttons.Add(bi);
+                    flowButtonPanel.Controls.Add(bi.Button);
 
-                if (c.BreakAfter == BreakType.NewLine)
-                    flowButtonPanel.SetFlowBreak(bi.Button, true);
-                else if (c.BreakAfter == BreakType.Separator)
-                    flowButtonPanel.Controls.Add(NewLabelSeparator(bi.Button.Height));
+                    if (c.BreakAfter == BreakType.NewLine)
+                        flowButtonPanel.SetFlowBreak(bi.Button, true);
+                    else if (c.BreakAfter == BreakType.Separator)
+                        flowButtonPanel.Controls.Add(NewLabelSeparator(bi.Button.Height));
 
-                first = false;
+                    first = false;
+                }
+
+                // Configure MIDI Device Manager
+                if (!_midiInitialized)
+                {
+                    MidiDeviceManager.SetOutputDevices(_config.OutputDevices);
+                    _midiInitialized = true;
+                }
+
+                MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
+                midiBus1.Text = MidiDeviceManager.InputDevice?.Name ?? "No device found";
+
+                SetCurrentChannel(_config.DefaultChannel);
+
+                RecolorButtons();
             }
-
-            // Configure MIDI Device Manager
-            if (!_midiInitialized)
+            finally
             {
-                MidiDeviceManager.SetOutputDevices(_config.OutputDevices);
-                _midiInitialized = true;
+                ResumeLayout(true);
             }
-
-            MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
-            midiBus1.Text = MidiDeviceManager.InputDevice?.Name ?? "No device found";
-
-            SetCurrentChannel(_config.DefaultChannel);
 
             // Calculate new height
             var border = Height - flowOutputDevicesPanel.Height;
             Height = Math.Max(flowOutputDevicesPanel.PreferredSize.Height, flowButtonPanel.PreferredSize.Height) + border;
             ABSetPos();
 
-            RecolorButtons();
             GC.Collect();
         }
 
@@ -409,10 +342,10 @@ namespace MidiJunction.Forms
 
         private void CurrentChannelButtonClick(object sender, EventArgs e)
         {
-            if (sender == midiLeft && _currentChannel > 0)
-                SetCurrentChannel(_currentChannel - 1);
-            else if (sender == midiRight && _currentChannel < 15)
-                SetCurrentChannel(_currentChannel + 1);
+            if (sender == midiLeft && CurrentChannel > 0)
+                SetCurrentChannel(CurrentChannel - 1);
+            else if (sender == midiRight && CurrentChannel < 15)
+                SetCurrentChannel(CurrentChannel + 1);
         }
 
         private void DeviceMessage(object sender, MidiMessageEventArgs args)
@@ -422,7 +355,7 @@ namespace MidiJunction.Forms
             var highlight = new List<Tuple<int, int>>();
 
             // Start by outputting the data - as low latency as possible
-            if (msg.Channel == _currentChannel)
+            if (msg.Channel == CurrentChannel)
             {
                 if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && msg.Data1 >= 21 && msg.Data1 <= 23)
                 {
@@ -432,6 +365,11 @@ namespace MidiJunction.Forms
                     PerformHotSwitch(msg.Data1 - 20);
                     return;
                 }
+
+                if (msg.IsNoteOnMessage)
+                    NoteManager.Activate(msg.Data1);
+                else if (msg.IsNoteOffMessage)
+                    NoteManager.Deactivate(msg.Data1);
 
                 var channels = msg.IsControlMessage && _config.ControlOnAllChannels
                     ? _buttons
@@ -497,22 +435,20 @@ namespace MidiJunction.Forms
         {
             Task.Run(() =>
             {
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOn(_currentChannel, 0x3C, 0x40)));
+                NoteManager.TurnNoteOn(0x3C, 0x40);
                 Thread.Sleep(100);
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOn(_currentChannel, 0x40, 0x50)));
+                NoteManager.TurnNoteOn(0x40, 0x50);
                 Thread.Sleep(100);
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOn(_currentChannel, 0x43, 0x60)));
+                NoteManager.TurnNoteOn(0x43, 0x60);
                 Thread.Sleep(1000);
 
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOff(_currentChannel, 0x3C, 0)));
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOff(_currentChannel, 0x40, 0)));
-                DeviceMessage(this, new MidiMessageEventArgs(0, MidiMessage.NoteOff(_currentChannel, 0x43, 0)));
+                NoteManager.TurnAllNotesOff();
             });
         }
 
         public void SetCurrentChannel(int channel)
         {
-            _currentChannel = channel;
+            NoteManager.CurrentChannel = channel;
             labelCurrentChannel.Text = (channel + 1).ToString();
             midiInputBus.ActiveChannel = channel;
             midiInputBus.Invalidate();
@@ -527,6 +463,10 @@ namespace MidiJunction.Forms
             try
             {
                 var ticks = DateTime.Now.Millisecond;
+
+                var chord = NoteManager.CurrentChord();
+                if (chord != null)
+                    labelChord.Text = chord;
 
                 midiInputBus.Tick();
                 foreach (var control in flowOutputDevicesPanel.Controls.OfType<MidiBus>())

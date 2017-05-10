@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ButtonInfo.cs" />
+    <Compile Include="Classes\KeyMapEntry.cs" />
+    <Compile Include="Classes\NoteManager.cs" />
     <Compile Include="Configuration\ConfigPerformance.cs" />
     <Compile Include="Controls\Line.cs">
       <SubType>UserControl</SubType>
@@ -67,8 +70,8 @@
     <Compile Include="Forms\FormInputDialog.Designer.cs">
       <DependentUpon>FormInputDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="WinApi.cs" />
-    <Compile Include="AppBar.cs">
+    <Compile Include="Classes\WinApi.cs" />
+    <Compile Include="Classes\AppBar.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Configuration\ConfigButton.cs" />
@@ -120,7 +123,7 @@
     <Compile Include="Forms\FormMessageTrace.Designer.cs">
       <DependentUpon>FormMessageTrace.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helper.cs" />
+    <Compile Include="Classes\Helper.cs" />
     <Compile Include="Controls\Piano.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace MidiJunction
+namespace MidiJunction.Classes
 {
     public class WinApi
     {

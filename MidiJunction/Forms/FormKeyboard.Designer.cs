@@ -31,30 +31,40 @@ namespace MidiJunction.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.Piano = new Piano();
+            this.components = new System.ComponentModel.Container();
+            this.Piano = new MidiJunction.Controls.Piano();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // Piano
             // 
-            this.Piano.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            this.Piano.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Piano.Location = new System.Drawing.Point(12, 13);
             this.Piano.Name = "Piano";
-            this.Piano.Size = new System.Drawing.Size(1024, 111);
+            this.Piano.Size = new System.Drawing.Size(896, 100);
             this.Piano.TabIndex = 0;
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // FormKeyboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1048, 136);
+            this.ClientSize = new System.Drawing.Size(920, 125);
             this.Controls.Add(this.Piano);
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormKeyboard";
             this.Text = "Virtual keyboard";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormKeyboard_FormClosing);
+            this.VisibleChanged += new System.EventHandler(this.FormKeyboard_VisibleChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormKeyboard_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FormKeyboard_KeyUp);
             this.ResumeLayout(false);
 
         }
@@ -62,5 +72,6 @@ namespace MidiJunction.Forms
         #endregion
 
         public Piano Piano;
+        private System.Windows.Forms.Timer timer1;
     }
 }
