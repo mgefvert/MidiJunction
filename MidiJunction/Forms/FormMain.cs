@@ -30,6 +30,7 @@ namespace MidiJunction.Forms
         private readonly FormKeyboard _formKeyboard;
         private readonly FormSettings _formSettings;
         private readonly FormMessageTrace _formTracing;
+        private readonly FormSecondaryScreen _formSecondary;
         private bool _closing;
         private bool _midiInitialized;
         private Keys? _activeHotKey;
@@ -37,6 +38,7 @@ namespace MidiJunction.Forms
         private readonly List<int> _hotStandby = new List<int>();
 
         public int CurrentChannel => NoteManager.CurrentChannel;
+        private int _lastTime;
 
         public FormMain()
         {
@@ -55,6 +57,14 @@ namespace MidiJunction.Forms
             _formTracing = new FormMessageTrace();
             _formKeyboard = new FormKeyboard();
             _volume = new SystemVolume();
+
+            _formSecondary = new FormSecondaryScreen();
+            if (Screen.AllScreens.Length > 1 && _config.UseSecondaryMonitor)
+            {
+                var monitor = Screen.AllScreens.First(s => !s.Primary).Bounds;
+                _formSecondary.Show();
+                _formSecondary.SetBounds(monitor.X, monitor.Y, monitor.Width, monitor.Height, BoundsSpecified.All);
+            }
 
             _keyMap.AddRange(new[]
             {
@@ -473,7 +483,7 @@ namespace MidiJunction.Forms
                     control.Tick();
 
                 // Update volume indicator
-                var v = ((int) _volume.GetVolume());
+                var v = (int) _volume.GetVolume();
                 labelVolume.Text = v.ToString();
                 progressBar1.Value = v;
 
@@ -489,11 +499,21 @@ namespace MidiJunction.Forms
                     UpdatePerformances();
                 }
 
-                // Rescan MIDI output
-                if (_closing)
-                    return;
+                // Only do this every 1/4 second
+                var time = DateTime.Now.Millisecond / 250;
+                if (_lastTime != time)
+                {
+                    _lastTime = time;
 
-                MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
+                    // Rescan MIDI output
+                    MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
+
+                    // Update instrument devices on secondary monitor
+                    var devices = _buttons.Where(x => x.Active).Select(x => x.Config.Name).ToList();
+                    _formSecondary.labelDevices.Text = string.Join("\r\n", devices);
+                    _formSecondary.labelChord.Text = labelChord.Text;
+                }
+
                 midiInputBus.Title = MidiDeviceManager.InputDevice?.Name ?? _config.InputDevice;
                 midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput
                     ? Color.Transparent

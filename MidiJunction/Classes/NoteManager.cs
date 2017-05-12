@@ -130,7 +130,7 @@ namespace MidiJunction.Classes
             }
 
             if (!chords.Any())
-                return "?";
+                return "";
 
             var found = chords.OrderBy(x => x.Item2).First();
             return MidiNoteToDisplayNote(found.Item1) + found.Item3;
