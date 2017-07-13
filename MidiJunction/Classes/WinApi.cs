@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace MidiJunction.Classes
 {
-    public class WinApi
+    public static class WinApi
     {
         // ReSharper disable InconsistentNaming
 
@@ -34,28 +34,43 @@ namespace MidiJunction.Classes
         public const int ULW_COLORKEY = 1;
         public const int ULW_OPAQUE = 4;
         public const int WM_ACTIVATE = 0x0006;
+        public const int WM_POWERBROADCAST = 0x0218;
         public const int WM_HOTKEY = 0x0312;
         public const int WS_EX_LAYERED = 0x00080000;
         public const int WS_EX_TRANSPARENT = 0x00000020;
 
-        public class SWP
+        public enum SPI
+        {
+            GETSCREENSAVEACTIVE = 0x0010
+        }
+
+        [Flags]
+        public enum SPIF
+        {
+            None = 0x00,
+            SPIF_UPDATEINIFILE = 0x01,
+            SPIF_SENDCHANGE = 0x02,
+            SPIF_SENDWININICHANGE = 0x02
+        }
+
+        public static class SWP
         {
             public static readonly uint
-              NOSIZE = 0x0001,
-              NOMOVE = 0x0002,
-              NOZORDER = 0x0004,
-              NOREDRAW = 0x0008,
-              NOACTIVATE = 0x0010,
-              DRAWFRAME = 0x0020,
-              FRAMECHANGED = 0x0020,
-              SHOWWINDOW = 0x0040,
-              HIDEWINDOW = 0x0080,
-              NOCOPYBITS = 0x0100,
-              NOOWNERZORDER = 0x0200,
-              NOREPOSITION = 0x0200,
-              NOSENDCHANGING = 0x0400,
-              DEFERERASE = 0x2000,
-              ASYNCWINDOWPOS = 0x4000;
+            NOSIZE = 0x0001,
+            NOMOVE = 0x0002,
+            NOZORDER = 0x0004,
+            NOREDRAW = 0x0008,
+            NOACTIVATE = 0x0010,
+            DRAWFRAME = 0x0020,
+            FRAMECHANGED = 0x0020,
+            SHOWWINDOW = 0x0040,
+            HIDEWINDOW = 0x0080,
+            NOCOPYBITS = 0x0100,
+            NOOWNERZORDER = 0x0200,
+            NOREPOSITION = 0x0200,
+            NOSENDCHANGING = 0x0400,
+            DEFERERASE = 0x2000,
+            ASYNCWINDOWPOS = 0x4000;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -82,6 +97,9 @@ namespace MidiJunction.Classes
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+        public static extern ulong GetTickCount64();
+		
         [DllImport("user32.dll")]
         public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
@@ -93,6 +111,10 @@ namespace MidiJunction.Classes
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
 
         [DllImport("user32.dll")]
         public static extern bool UnregisterHotKey(IntPtr hWnd, int id);

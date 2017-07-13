@@ -10,6 +10,8 @@ namespace MidiJunction.Configuration
 {
     public class Config
     {
+        public event EventHandler Changed;
+
         public static readonly Keys[] AllowedKeys =
         {
             Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9, Keys.D0,
@@ -27,10 +29,7 @@ namespace MidiJunction.Configuration
         public bool ControlOnAllChannels { get; set; }
         public bool LowKeysControlHotKeys { get; set; } = true;
         public bool UseSecondaryMonitor { get; set; }
-
-        public Dictionary<int, ConfigPerformance> Performances = new Dictionary<int, ConfigPerformance>(); 
-
-        public event EventHandler Updated;
+        public ConfigPerformances Performances = new ConfigPerformances();
 
         public Config(string filename)
         {
@@ -40,6 +39,11 @@ namespace MidiJunction.Configuration
 
             _filename = filename;
             Load();
+        }
+
+        protected void FireChanged()
+        {
+            Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public void Load()
@@ -85,13 +89,13 @@ namespace MidiJunction.Configuration
             Performances.Clear();
             foreach (var node in xml.Elements("performances").Elements("performance"))
             {
-                var fkey = node.Attribute("fkey")?.Value.ParseInt() ?? 0;
+                var fkey = node.Attribute("fkey")?.Value.ParseInt();
                 var title = node.Attribute("title")?.Value;
                 var data = node.Attribute("data")?.Value;
-                if (fkey < 1 || fkey > 12 || string.IsNullOrEmpty(data))
+                if (string.IsNullOrEmpty(title) || fkey < 1 || fkey > 12 || string.IsNullOrEmpty(data))
                     continue;
 
-                Performances[fkey] = new ConfigPerformance
+                Performances[title] = new ConfigPerformance
                 {
                     FKey = fkey,
                     Title = title,
@@ -103,35 +107,37 @@ namespace MidiJunction.Configuration
             ControlOnAllChannels = (xml.Element("control-all-channels")?.Value.ParseInt() ?? 0) != 0;
             LowKeysControlHotKeys = (xml.Element("low-keys-control-hotkeys")?.Value.ParseInt() ?? 1) != 0;
             UseSecondaryMonitor = (xml.Element("use-secondary-monitor")?.Value.ParseInt() ?? 1) != 0;
+
+            FireChanged();
         }
 
         public void Save()
         {
             var outputDevices = OutputDevices.Select(x => new XElement("device", new XAttribute("name", x)));
             var buttons = Buttons.Select(x => new XElement("button",
-              new XAttribute("device", x.Device),
-              new XAttribute("channel", x.Channel),
-              new XAttribute("name", x.Name),
-              new XAttribute("key", Helper.KeyToString(x.Key)),
-              new XAttribute("break", x.BreakAfter.ToString())
+                new XAttribute("device", x.Device),
+                new XAttribute("channel", x.Channel),
+                new XAttribute("name", x.Name),
+                new XAttribute("key", Helper.KeyToString(x.Key)),
+                new XAttribute("break", x.BreakAfter.ToString())
             ));
             var performances = Performances.Values.Select(x => new XElement("performance",
-              new XAttribute("fkey", x.FKey),
-              new XAttribute("title", x.Title),
-              new XAttribute("data", x.Data)
+                new XAttribute("title", x.Title),
+                new XAttribute("data", x.Data),
+                x.FKey != null ? new XAttribute("fkey", x.FKey) : null
             ));
 
             var doc = new XDocument(
-              new XElement("xml",
-                new XElement("input-device", InputDevice),
-                new XElement("output-devices", outputDevices),
-                new XElement("default-channel", DefaultChannel),
-                new XElement("buttons", buttons),
-                new XElement("performances", performances),
-                new XElement("control-all-channels", ControlOnAllChannels ? 1 : 0),
-                new XElement("low-keys-control-hotkeys", LowKeysControlHotKeys ? 1 : 0),
-                new XElement("use-secondary-monitor", UseSecondaryMonitor ? 1 : 0)
-              )
+                new XElement("xml",
+                    new XElement("input-device", InputDevice),
+                    new XElement("output-devices", outputDevices),
+                    new XElement("default-channel", DefaultChannel),
+                    new XElement("buttons", buttons),
+                    new XElement("performances", performances),
+                    new XElement("control-all-channels", ControlOnAllChannels ? 1 : 0),
+                    new XElement("low-keys-control-hotkeys", LowKeysControlHotKeys ? 1 : 0),
+                    new XElement("use-secondary-monitor", UseSecondaryMonitor ? 1 : 0)
+                )
             );
 
             doc.Save(_filename);
@@ -140,7 +146,7 @@ namespace MidiJunction.Configuration
         public void TriggerUpdated()
         {
             Save();
-            Updated?.Invoke(this, EventArgs.Empty);
+            FireChanged();
         }
     }
 }

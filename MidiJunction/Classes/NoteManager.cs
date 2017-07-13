@@ -42,26 +42,29 @@ namespace MidiJunction.Classes
             new Chord(4, "maj7",   0, 4, 7, 11),
             new Chord(4, "m7",     0, 3, 7, 10),
             new Chord(4, "mmaj7",  0, 3, 7, 11),
-            new Chord(4, "6",      0, 4, 9),
-            new Chord(4, "6",      0, 4, 7, 9),
-            new Chord(4, "m6",     0, 3, 9),
-            new Chord(4, "m6",     0, 3, 7, 9),
-
-            // Just thirds
-            new Chord(5, "",       0, 4),
-            new Chord(5, "m",      0, 3),
-
-            // Sixths without thirds
-            new Chord(6, "6no3",   0, 9),
-            new Chord(6, "6no3",   0, 7, 9),
 
             // Diminished
-            new Chord(7, "dim",    0, 3, 6),
-            new Chord(7, "dim",    0, 3, 6, 9),
+            new Chord(5, "dim",    0, 3, 6),
+            new Chord(5, "dim",    0, 3, 6, 9),
+
+            // Sixths
+            new Chord(6, "6",      0, 4, 9),
+            new Chord(6, "6",      0, 4, 7, 9),
+            new Chord(6, "m6",     0, 3, 9),
+            new Chord(6, "m6",     0, 3, 7, 9),
+
+            // Just thirds
+            new Chord(7, "",       0, 4),
+            new Chord(7, "m",      0, 3),
+
+            // Sixths without thirds
+            new Chord(8, "6no3",   0, 9),
+            new Chord(8, "6no3",   0, 7, 9),
         };
 
         private static readonly SortedSet<int> Active = new SortedSet<int>();
 
+        private static string _lastChord;
         public static event MidiMessageHandler MidiMessage;
         public static int CurrentChannel { get; set; }
 
@@ -155,12 +158,15 @@ namespace MidiJunction.Classes
 
         public static void Activate(int note)
         {
+            _lastChord = null;
             Active.Add(note);
         }
 
         public static void Deactivate(int note)
         {
             Active.Remove(note);
+            if (!Active.Any())
+                _lastChord = null;
         }
 
         public static void TurnNoteOn(int note, int velocity)
@@ -181,7 +187,7 @@ namespace MidiJunction.Classes
 
         public static string CurrentChord()
         {
-            return MidiNotesToChord(NotesOn());
+            return _lastChord ?? (_lastChord = MidiNotesToChord(NotesOn()));
         }
     }
 }

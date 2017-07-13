@@ -92,8 +92,8 @@ namespace MidiJunction.Devices
 
         public byte[] Bytes => new[] { Status, Data1, Data2 };
 
-        public bool IsNoteOffMessage => (Status & 0xF0u) == 0x80u;
-        public bool IsNoteOnMessage => (Status & 0xF0u) == 0x90u;
+        public bool IsNoteOffMessage => (Status & 0xF0u) == 0x80u || (Status & 0xF0u) == 0x90 && Data2 == 0;
+        public bool IsNoteOnMessage => (Status & 0xF0u) == 0x90u && Data2 > 0;
         public bool IsNoteMessage => IsNoteOnMessage || IsNoteOffMessage;
 
         public MidiMessage()

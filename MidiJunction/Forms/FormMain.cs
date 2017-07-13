@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DotNetCommons;
 using MidiJunction.Classes;
 using MidiJunction.Configuration;
 using MidiJunction.Controls;
@@ -31,10 +30,12 @@ namespace MidiJunction.Forms
         private readonly FormSettings _formSettings;
         private readonly FormMessageTrace _formTracing;
         private readonly FormSecondaryScreen _formSecondary;
+        private readonly FormPerformances _formPerformances;
         private bool _closing;
         private bool _midiInitialized;
         private Keys? _activeHotKey;
         private DateTime _activeHotKeyTime;
+        private DateTime _lastChordTime;
         private readonly List<int> _hotStandby = new List<int>();
 
         public int CurrentChannel => NoteManager.CurrentChannel;
@@ -44,81 +45,52 @@ namespace MidiJunction.Forms
         {
             InitializeComponent();
 
-            NoteManager.MidiMessage += DeviceMessage;
+            NoteManager.MidiMessage += ChannelDeviceMessage;
 
             _regularFont = new Font(label1.Font, FontStyle.Regular);
             _boldFont = new Font(label1.Font, FontStyle.Bold);
 
             labelChord.Text = "";
             label1.Text = "";
-            _config.Updated += (sender, args) => InitializeFromConfig();
+
+            _config.Changed += (sender, args) => InitializeFromConfig();
+            _config.Performances.Changed += (sender, args) => PerformancesUpdate();
 
             _formSettings = new FormSettings(_config);
             _formTracing = new FormMessageTrace();
             _formKeyboard = new FormKeyboard();
-            _volume = new SystemVolume();
-
             _formSecondary = new FormSecondaryScreen();
-            if (Screen.AllScreens.Length > 1 && _config.UseSecondaryMonitor)
-            {
-                var monitor = Screen.AllScreens.First(s => !s.Primary).Bounds;
-                _formSecondary.Show();
-                _formSecondary.SetBounds(monitor.X, monitor.Y, monitor.Width, monitor.Height, BoundsSpecified.All);
-            }
+            _formPerformances = new FormPerformances(_config, _config.Performances);
+            _volume = new SystemVolume();
 
             _keyMap.AddRange(new[]
             {
                 // Space - toggle hot switch buttons
-                new KeyMapEntry(Keys.Space, false, keys => PerformHotSwitch()),
+                new KeyMapEntry(Keys.Space, false, keys => StandbyPerformSwitch()),
 
                 // Escape - reset everything
-                new KeyMapEntry(Keys.Escape, false, keys => ResetAllNotes()),
+                new KeyMapEntry(Keys.Escape, false, keys => NotesResetAll()),
 
                 // Volume up/down
                 new KeyMapEntry(Keys.Add, false, keys => _volume.Increase10()),
                 new KeyMapEntry(Keys.Subtract, false, keys => _volume.Decrease10()),
 
                 // Send test note
-                new KeyMapEntry(Keys.Divide, false, keys => SendTestNotes()),
+                new KeyMapEntry(Keys.Divide, false, keys => NotesSendTest()),
 
                 // Function keys for loading and saving performances
-                new KeyMapEntry(Keys.F1, Keys.F12, false, SelectPerformance),
-                new KeyMapEntry(Keys.F1, Keys.F12, true, SavePerformance),
+                new KeyMapEntry(Keys.F1, Keys.F11, false, PerformancesSelect),
+                new KeyMapEntry(Keys.F1, Keys.F11, true, PerformancesSave),
+                new KeyMapEntry(Keys.F12, false, PerformancesView), 
 
                 // A-Z, 0-9 keys for switching instruments
                 new KeyMapEntry(Keys.A, Keys.Z, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
-                new KeyMapEntry(Keys.A, Keys.Z, true, keys => { ToggleStandby(_buttons.FirstOrDefault(x => x.Key == keys)); RecolorButtons(); }),
+                new KeyMapEntry(Keys.A, Keys.Z, true, keys => { StandbyToggle(_buttons.FirstOrDefault(x => x.Key == keys)); ButtonsRecolor(); }),
                 new KeyMapEntry(Keys.D0, Keys.D9, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
-                new KeyMapEntry(Keys.D0, Keys.D9, true, keys => { ToggleStandby(_buttons.FirstOrDefault(x => x.Key == keys)); RecolorButtons(); }),
+                new KeyMapEntry(Keys.D0, Keys.D9, true, keys => { StandbyToggle(_buttons.FirstOrDefault(x => x.Key == keys)); ButtonsRecolor(); }),
             });
 
             RegisterAppBar();
-        }
-
-        private void PerformHotSwitch()
-        {
-            var current = _hotStandby.Any() ? _hotStandby.Max() : 0;
-            var max = _buttons.Max(x => x.HotStandby);
-
-            if (current < max)
-                PerformHotSwitch(current + 1);
-            else
-            {
-                // Turn off all active standby modes
-                foreach(var n in _hotStandby.ToList())
-                    PerformHotSwitch(n);
-            }
-        }
-
-        private void PerformHotSwitch(int standbyNote)
-        {
-            if (_hotStandby.Contains(standbyNote))
-                _hotStandby.Remove(standbyNote);
-            else
-                _hotStandby.Add(standbyNote);
-
-            foreach (var b in _buttons.Where(x => x.HotStandby == standbyNote))
-                b.Button.PerformClick();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -183,7 +155,7 @@ namespace MidiJunction.Forms
             {
                 // Set up input device
                 midiInputBus.Text = _config.InputDevice;
-                UpdatePerformances();
+                PerformancesUpdate();
 
                 if (!_midiInitialized)
                 {
@@ -254,12 +226,22 @@ namespace MidiJunction.Forms
                     _midiInitialized = true;
                 }
 
-                MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
+                MidiDeviceManager.RescanInputDevice(_config.InputDevice, ChannelDeviceMessage);
                 midiBus1.Text = MidiDeviceManager.InputDevice?.Name ?? "No device found";
 
-                SetCurrentChannel(_config.DefaultChannel);
+                ChannelSetCurrent(_config.DefaultChannel);
 
-                RecolorButtons();
+                ButtonsRecolor();
+
+                // Use secondary monitor?
+                if (Screen.AllScreens.Length > 1 && _config.UseSecondaryMonitor)
+                {
+                    var monitor = Screen.AllScreens.First(s => !s.Primary).Bounds;
+                    _formSecondary.Show();
+                    _formSecondary.SetBounds(monitor.X, monitor.Y, monitor.Width, monitor.Height, BoundsSpecified.All);
+                }
+                else
+                    _formSecondary.Hide();
             }
             finally
             {
@@ -272,40 +254,6 @@ namespace MidiJunction.Forms
             ABSetPos();
 
             GC.Collect();
-        }
-
-        public void ToggleStandby(ButtonInfo info)
-        {
-            if (info == null)
-                return;
-
-            // If the button has no standby, just increase to the first level.
-            if (info.HotStandby == 0)
-            {
-                info.HotStandby = 1;
-                return;
-            }
-
-            // Figure out the maximum standby level and how many buttons have that.
-            var maxStandbyLevel = _buttons.Max(x => x.HotStandby);
-            var maxStandbyCount = _buttons.Count(x => x.HotStandby == maxStandbyLevel);
-
-            // Less than maximum? 
-            if (info.HotStandby < maxStandbyLevel)
-            {
-                info.HotStandby++;
-                return;
-            }
-
-            // If we're already at maximum, or we're the only button at this level, wrap bac to zero.
-            if (maxStandbyCount == 1 || maxStandbyLevel >= 3)
-            {
-                info.HotStandby = 0;
-                return;
-            }
-
-            // We're not at maximum and there is another button with our level. Increase by one.
-            info.HotStandby++;
         }
 
         private Control NewLabelSeparator(int height)
@@ -321,6 +269,15 @@ namespace MidiJunction.Forms
             };
         }
 
+        private void ButtonsRecolor()
+        {
+            Invoke((Action) delegate
+            {
+                foreach(var button in _buttons)
+                    button.Recolor();
+            });
+        }
+
         private void ChannelButtonClick(object sender, EventArgs e)
         {
             var info = _buttons.FirstOrDefault(x => x.Button == sender);
@@ -334,7 +291,7 @@ namespace MidiJunction.Forms
                 _formKeyboard.Piano.ClearAllKeys();
             }
 
-            RecolorButtons();
+            ButtonsRecolor();
         }
 
         private void ChannelButtonMouseClick(object sender, MouseEventArgs e)
@@ -346,19 +303,19 @@ namespace MidiJunction.Forms
             if (info == null)
                 return;
 
-            ToggleStandby(info);
-            RecolorButtons();
+            StandbyToggle(info);
+            ButtonsRecolor();
         }
 
-        private void CurrentChannelButtonClick(object sender, EventArgs e)
+        private void ChannelCurrentButtonClick(object sender, EventArgs e)
         {
             if (sender == midiLeft && CurrentChannel > 0)
-                SetCurrentChannel(CurrentChannel - 1);
+                ChannelSetCurrent(CurrentChannel - 1);
             else if (sender == midiRight && CurrentChannel < 15)
-                SetCurrentChannel(CurrentChannel + 1);
+                ChannelSetCurrent(CurrentChannel + 1);
         }
 
-        private void DeviceMessage(object sender, MidiMessageEventArgs args)
+        private void ChannelDeviceMessage(object sender, MidiMessageEventArgs args)
         {
             var msg = args.Message;
             var inChannel = msg.Channel;
@@ -367,12 +324,12 @@ namespace MidiJunction.Forms
             // Start by outputting the data - as low latency as possible
             if (msg.Channel == CurrentChannel)
             {
-                if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && msg.Data1 >= 21 && msg.Data1 <= 23)
+                if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && msg.Data1 >= 21 && msg.Data1 <= 24)
                 {
                     if (!msg.IsNoteOnMessage)
                         return;
 
-                    PerformHotSwitch(msg.Data1 - 20);
+                    StandbyPerformSwitch(msg.Data1 - 21);
                     return;
                 }
 
@@ -418,16 +375,15 @@ namespace MidiJunction.Forms
             });
         }
 
-        private void RecolorButtons()
+        public void ChannelSetCurrent(int channel)
         {
-            Invoke((Action) delegate
-            {
-                foreach(var button in _buttons)
-                    button.Recolor();
-            });
+            NoteManager.CurrentChannel = channel;
+            labelCurrentChannel.Text = (channel + 1).ToString();
+            midiInputBus.ActiveChannel = channel;
+            midiInputBus.Invalidate();
         }
 
-        private void ResetAllNotes()
+        private void NotesResetAll()
         {
             foreach (var button in _buttons)
             {
@@ -438,10 +394,10 @@ namespace MidiJunction.Forms
             MidiDeviceManager.SendAllNotesOff();
             _formKeyboard.Piano.ClearAllKeys();
 
-            RecolorButtons();
+            ButtonsRecolor();
         }
 
-        private void SendTestNotes()
+        private void NotesSendTest()
         {
             Task.Run(() =>
             {
@@ -456,77 +412,9 @@ namespace MidiJunction.Forms
             });
         }
 
-        public void SetCurrentChannel(int channel)
+        private void menuClose_Click(object sender, EventArgs e)
         {
-            NoteManager.CurrentChannel = channel;
-            labelCurrentChannel.Text = (channel + 1).ToString();
-            midiInputBus.ActiveChannel = channel;
-            midiInputBus.Invalidate();
-        }
-
-        private void TimerTick(object sender, EventArgs e)
-        {
-            if (IsDisposed || _closing)
-                return;
-
-            timer1.Enabled = false;
-            try
-            {
-                var ticks = DateTime.Now.Millisecond;
-
-                var chord = NoteManager.CurrentChord();
-                if (chord != null)
-                    labelChord.Text = chord;
-
-                midiInputBus.Tick();
-                foreach (var control in flowOutputDevicesPanel.Controls.OfType<MidiBus>())
-                    control.Tick();
-
-                // Update volume indicator
-                var v = (int) _volume.GetVolume();
-                labelVolume.Text = v.ToString();
-                progressBar1.Value = v;
-
-                // Update window focus indicator
-                var active = WinApi.GetForegroundWindow() == Handle;
-                focusLabel.BackColor = active ? Color.Chartreuse : (ticks < 400 ? Color.Red : Color.Gray);
-
-                // Update hot key indicator
-                if (_activeHotKeyTime < DateTime.Now)
-                {
-                    _activeHotKeyTime = DateTime.MinValue;
-                    _activeHotKey = null;
-                    UpdatePerformances();
-                }
-
-                // Only do this every 1/4 second
-                var time = DateTime.Now.Millisecond / 250;
-                if (_lastTime != time)
-                {
-                    _lastTime = time;
-
-                    // Rescan MIDI output
-                    MidiDeviceManager.RescanInputDevice(_config.InputDevice, DeviceMessage);
-
-                    // Update instrument devices on secondary monitor
-                    var devices = _buttons.Where(x => x.Active).Select(x => x.Config.Name).ToList();
-                    _formSecondary.labelDevices.Text = string.Join("\r\n", devices);
-                    _formSecondary.labelChord.Text = labelChord.Text;
-                }
-
-                midiInputBus.Title = MidiDeviceManager.InputDevice?.Name ?? _config.InputDevice;
-                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput
-                    ? Color.Transparent
-                    : (ticks < 700 ? Color.Red : Color.Transparent);
-            }
-            catch
-            {
-                //
-            }
-            finally
-            {
-                timer1.Enabled = true;
-            }
+            Close();
         }
 
         private void menuHamburger_Click(object sender, EventArgs e)
@@ -538,38 +426,13 @@ namespace MidiJunction.Forms
             WinApi.SetWindowPos(menuHamburger.Handle, IntPtr.Zero, pt.X, pt.Y, 0, 0, WinApi.SWP.NOSIZE);
         }
 
-        private void menuClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void menuSettings_Click(object sender, EventArgs e)
-        {
-            _formSettings.Show();
-        }
-
-        private void menuTools_Click(object sender, EventArgs e)
-        {
-            _formTracing.Show();
-        }
-
-        private void menuShowPiano_Click(object sender, EventArgs e)
-        {
-            _formKeyboard.Show();
-        }
-
-        private void aboutMIDIJunctionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menuHelpAbout_Click(object sender, EventArgs e)
         {
             using (var form = new FormAbout())
                 form.ShowDialog();
         }
 
-        private void showOverviewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("http://www.gefvert.org/site/downloads/midi-junction");
-        }
-
-        private void keysToolStripMenuItem_Click(object sender, EventArgs e)
+        private void menuHelpKeys_Click(object sender, EventArgs e)
         {
             var msg = new List<string>
             {
@@ -581,51 +444,69 @@ namespace MidiJunction.Forms
                 "SHIFT A-Z, 0-9\tMake instrument hot-standby",
                 "SPACE\t\tToggle hot-standby instruments",
                 "",
-                "F1-F12\t\tSelect performance",
-                "Shift F1-F12\tSave current instruments as performance"
+                "F1-F11\t\tSelect performance",
+                "Shift F1-F11\tSave current instruments as performance",
+                "F12\t\tDisplay performances window"
             };
-
+            
             MessageBox.Show(string.Join("\r\n", msg), "Keys", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public void SavePerformance(Keys key)
+        private void menuHelpOverview_Click(object sender, EventArgs e)
         {
-            var fkey = (int) key - (int) Keys.F1 + 1;
-            if (fkey < 1 || fkey > 12)
-                return;
+            Process.Start("http://www.gefvert.org/site/downloads/midi-junction");
+        }
 
+        private void menuPerformances_Click(object sender, EventArgs e)
+        {
+            _formPerformances.Show();
+        }
+
+        private void menuSettings_Click(object sender, EventArgs e)
+        {
+            _formSettings.Show();
+        }
+
+        private void menuShowPiano_Click(object sender, EventArgs e)
+        {
+            _formKeyboard.Show();
+        }
+
+        private void menuTools_Click(object sender, EventArgs e)
+        {
+            _formTracing.Show();
+        }
+
+        public void PerformancesSave(Keys key)
+        {
             var items = _buttons
                 .Where(button => button.Active || button.HotStandby != 0)
                 .Select(b => b.Config.Device + "," + b.Config.Channel + "," + (b.Active ? "A" : "") + b.HotStandby)
                 .ToList();
 
-            var result = FormInputDialog.Execute("Save performance", "Save performance as...", _config.Performances.GetOrDefault(fkey)?.Title);
+            var existingPerformance = _config.Performances.GetPerformance(key);
+            var result = FormInputDialog.Execute("Save performance", "Save performance as...", existingPerformance?.Title);
             if (result == null)
                 return;
 
             if (result == "")
-                _config.Performances.Remove(fkey);
+                _config.Performances.RemovePerformance(key);
             else
-                _config.Performances[fkey] = new ConfigPerformance
-                {
-                    FKey = fkey,
-                    Title = result,
-                    Data = string.Join("|", items)
-                };
+                _config.Performances.SavePerformance(key, result, string.Join("|", items));
 
-            UpdatePerformances();
+            PerformancesUpdate();
             _config.Save();
         }
 
-        public void SelectPerformance(Keys key)
+        public void PerformancesSelect(Keys key)
         {
-            var data = _config.Performances.GetOrDefault((int)key - (int)Keys.F1 + 1)?.Data;
-            if (string.IsNullOrEmpty(data))
+            var performance = _config.Performances.GetPerformance(key);
+            if (performance == null)
             {
                 // Not a valid hot key, disable any current indication
                 _activeHotKey = null;
                 _activeHotKeyTime = DateTime.MinValue;
-                UpdatePerformances();
+                PerformancesUpdate();
                 return;
             }
 
@@ -634,19 +515,28 @@ namespace MidiJunction.Forms
                 // No double-press yet, select hot key and display indication
                 _activeHotKey = key;
                 _activeHotKeyTime = DateTime.Now.AddSeconds(1);
-                UpdatePerformances();
+                PerformancesUpdate();
                 return;
             }
 
             // Double hot key press. Switch to new configuration.
-            SelectPerformance(data);
+            PerformancesSelect(performance.Data);
             _activeHotKey = null;
             _activeHotKeyTime = DateTime.MinValue;
-            UpdatePerformances();
+            PerformancesUpdate();
         }
 
-        public void SelectPerformance(string data)
+        public void PerformancesSelect(string data)
         {
+            int ExtractStandbyNumber(string s)
+            {
+                var number = string.Join("", s.ToCharArray().Where(char.IsDigit));
+                if (string.IsNullOrEmpty(number))
+                    return 0;
+
+                return !int.TryParse(s, out var n) ? 0 : Helper.Limit(n, 0, 3);
+            }
+
             // Reset all buttons
             foreach (var button in _buttons)
             {
@@ -676,28 +566,19 @@ namespace MidiJunction.Forms
                 }
             }
 
-            RecolorButtons();
+            ButtonsRecolor();
         }
 
-        private int ExtractStandbyNumber(string s)
+        public void PerformancesView(Keys key)
         {
-            var number = string.Join("", s.ToCharArray().Where(char.IsDigit));
-            if (string.IsNullOrEmpty(number))
-                return 0;
-
-            if (!int.TryParse(s, out var n))
-                return 0;
-
-            return Helper.Limit(n, 0, 3);
+            if (_formPerformances.Visible)
+                _formPerformances.Hide();
+            else
+                _formPerformances.Show();
         }
 
-        public void UpdatePerformances()
+        public void PerformancesUpdate()
         {
-            var performances = _config.Performances
-                .OrderBy(x => x.Key)
-                .Select(x => x.Value)
-                .ToList();
-
             if (_activeHotKey != null)
             {
                 label1.Text = "     PRESS " + Helper.KeyToString(_activeHotKey.Value) + " AGAIN TO ACTIVATE     ";
@@ -707,10 +588,161 @@ namespace MidiJunction.Forms
             }
             else
             {
-                label1.Text = string.Join("   ·   ", performances.Select(x => "F" + x.FKey + " " + x.Title));
+                var performances = _config.Performances.Values
+                    .Where(x => x.FKey != null)
+                    .OrderBy(x => x.FKey)
+                    .Select(x => "F" + x.FKey + " " + x.Title)
+                    .Concat(new[] { "F12 Select" })
+                    .ToList();
+
+                label1.Text = string.Join("   ·   ", performances);
                 label1.Font = _regularFont;
                 label1.ForeColor = Color.DarkGray;
                 label1.BackColor = Color.Transparent;
+            }
+        }
+
+        private void StandbyPerformSwitch()
+        {
+            var current = _hotStandby.Any() ? _hotStandby.Max() : 0;
+            var max = _buttons.Max(x => x.HotStandby);
+
+            if (current < max)
+                StandbyPerformSwitch(current + 1);
+            else
+                StandbyPerformSwitch(0);
+        }
+
+        private void StandbyPerformSwitch(int standbyNote)
+        {
+            if (standbyNote == 0)
+            {
+                // All notes off
+                _hotStandby.Clear();
+                Invoke((Action) delegate
+                {
+                    foreach (var b in _buttons.Where(x => x.HotStandby > 0 && x.Active))
+                        b.Button.PerformClick();
+                });
+                return;
+            }
+
+            if (_hotStandby.Contains(standbyNote))
+                _hotStandby.Remove(standbyNote);
+            else
+                _hotStandby.Add(standbyNote);
+
+            Invoke((Action)delegate
+            {
+                foreach (var b in _buttons.Where(x => x.HotStandby == standbyNote))
+                    b.Button.PerformClick();
+            });
+        }
+
+        public void StandbyToggle(ButtonInfo info)
+        {
+            if (info == null)
+                return;
+
+            // If the button has no standby, just increase to the first level.
+            if (info.HotStandby == 0)
+            {
+                info.HotStandby = 1;
+                return;
+            }
+
+            // Figure out the maximum standby level and how many buttons have that.
+            var maxStandbyLevel = _buttons.Max(x => x.HotStandby);
+            var maxStandbyCount = _buttons.Count(x => x.HotStandby == maxStandbyLevel);
+
+            // Less than maximum? 
+            if (info.HotStandby < maxStandbyLevel)
+            {
+                info.HotStandby++;
+                return;
+            }
+
+            // If we're already at maximum, or we're the only button at this level, wrap bac to zero.
+            if (maxStandbyCount == 1 || maxStandbyLevel >= 3)
+            {
+                info.HotStandby = 0;
+                return;
+            }
+
+            // We're not at maximum and there is another button with our level. Increase by one.
+            info.HotStandby++;
+        }
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            if (IsDisposed || _closing)
+                return;
+
+            timer1.Enabled = false;
+            try
+            {
+                var ticks = DateTime.Now.Millisecond;
+
+                var chord = NoteManager.CurrentChord();
+                if (chord != null)
+                {
+                    labelChord.Text = chord;
+                    _lastChordTime = DateTime.Now;
+                }
+                else
+                {
+                    if ((DateTime.Now - _lastChordTime).TotalSeconds > 1)
+                        labelChord.Text = "";
+                }
+
+                midiInputBus.Tick();
+                foreach (var control in flowOutputDevicesPanel.Controls.OfType<MidiBus>())
+                    control.Tick();
+
+                // Update volume indicator
+                var v = (int) _volume.GetVolume();
+                labelVolume.Text = v.ToString();
+                progressBar1.Value = v;
+
+                // Update window focus indicator
+                var active = WinApi.GetForegroundWindow() == Handle;
+                focusLabel.BackColor = active ? Color.Chartreuse : (ticks < 400 ? Color.Red : Color.Gray);
+
+                // Update hot key indicator
+                if (_activeHotKeyTime < DateTime.Now)
+                {
+                    _activeHotKeyTime = DateTime.MinValue;
+                    _activeHotKey = null;
+                    PerformancesUpdate();
+                }
+
+                // Only do this every 1/4 second
+                var time = DateTime.Now.Millisecond / 250;
+                if (_lastTime != time)
+                {
+                    _lastTime = time;
+
+                    // Rescan MIDI output
+                    MidiDeviceManager.RescanInputDevice(_config.InputDevice, ChannelDeviceMessage);
+
+                    // Update instrument devices on secondary monitor
+                    var devices = _buttons.Where(x => x.Active).Select(x => x.Config.Name).ToList();
+                    _formSecondary.labelDevices.Text = string.Join("\r\n", devices);
+                    _formSecondary.labelChord.Text = labelChord.Text;
+                }
+
+                midiInputBus.Title = MidiDeviceManager.InputDevice?.Name ?? _config.InputDevice;
+                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput
+                    ? Color.Transparent
+                    : (ticks < 700 ? Color.Red : Color.Transparent);
+            }
+            catch
+            {
+                //
+            }
+            finally
+            {
+                timer1.Enabled = true;
             }
         }
     }

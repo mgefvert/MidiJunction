@@ -60,6 +60,7 @@ namespace MidiJunction.Forms
             this.button10 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.midiChannel)).BeginInit();
             this.SuspendLayout();
             // 
@@ -355,7 +356,7 @@ namespace MidiJunction.Forms
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(394, 49);
+            this.checkBox1.Location = new System.Drawing.Point(394, 33);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(225, 17);
             this.checkBox1.TabIndex = 85;
@@ -365,12 +366,22 @@ namespace MidiJunction.Forms
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(394, 72);
+            this.checkBox2.Location = new System.Drawing.Point(394, 56);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(237, 17);
             this.checkBox2.TabIndex = 86;
             this.checkBox2.Text = "Use lowest piano keys to control hotkeys";
             this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(392, 79);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(221, 17);
+            this.checkBox3.TabIndex = 87;
+            this.checkBox3.Text = "Use secondary monitor to display info";
+            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // FormSettings
             // 
@@ -379,6 +390,7 @@ namespace MidiJunction.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(654, 601);
+            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button9);
@@ -449,5 +461,6 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox3;
     }
 }

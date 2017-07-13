@@ -49,13 +49,14 @@ namespace MidiJunction.Forms
             this.menuHamburger = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuShowPiano = new System.Windows.Forms.ToolStripMenuItem();
             this.menuTools = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPerformances = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showOverviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.keysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutMIDIJunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpOverview = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpKeys = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClose = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
@@ -119,7 +120,7 @@ namespace MidiJunction.Forms
             this.flowButtonPanel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.flowButtonPanel.Location = new System.Drawing.Point(311, 9);
             this.flowButtonPanel.Name = "flowButtonPanel";
-            this.flowButtonPanel.Size = new System.Drawing.Size(624, 59);
+            this.flowButtonPanel.Size = new System.Drawing.Size(601, 59);
             this.flowButtonPanel.TabIndex = 22;
             // 
             // focusLabel
@@ -160,7 +161,7 @@ namespace MidiJunction.Forms
             this.midiLeft.TabStop = false;
             this.midiLeft.Text = "t";
             this.midiLeft.UseVisualStyleBackColor = true;
-            this.midiLeft.Click += new System.EventHandler(this.CurrentChannelButtonClick);
+            this.midiLeft.Click += new System.EventHandler(this.ChannelCurrentButtonClick);
             // 
             // midiRight
             // 
@@ -176,7 +177,7 @@ namespace MidiJunction.Forms
             this.midiRight.TabStop = false;
             this.midiRight.Text = "u";
             this.midiRight.UseVisualStyleBackColor = true;
-            this.midiRight.Click += new System.EventHandler(this.CurrentChannelButtonClick);
+            this.midiRight.Click += new System.EventHandler(this.ChannelCurrentButtonClick);
             // 
             // labelVolume
             // 
@@ -228,7 +229,7 @@ namespace MidiJunction.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowOutputDevicesPanel.BackColor = System.Drawing.Color.Transparent;
             this.flowOutputDevicesPanel.Controls.Add(this.midiBus1);
-            this.flowOutputDevicesPanel.Location = new System.Drawing.Point(998, 9);
+            this.flowOutputDevicesPanel.Location = new System.Drawing.Point(980, 9);
             this.flowOutputDevicesPanel.Name = "flowOutputDevicesPanel";
             this.flowOutputDevicesPanel.Size = new System.Drawing.Size(200, 72);
             this.flowOutputDevicesPanel.TabIndex = 46;
@@ -239,7 +240,7 @@ namespace MidiJunction.Forms
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Wingdings", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.label4.ForeColor = System.Drawing.Color.DimGray;
-            this.label4.Location = new System.Drawing.Point(941, 9);
+            this.label4.Location = new System.Drawing.Point(921, 9);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 74);
             this.label4.TabIndex = 27;
@@ -279,80 +280,88 @@ namespace MidiJunction.Forms
             this.menuHamburger.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuShowPiano,
             this.menuTools,
+            this.menuPerformances,
             this.toolStripSeparator1,
             this.menuSettings,
             this.toolStripSeparator2,
-            this.helpToolStripMenuItem,
+            this.menuHelp,
             this.menuClose});
             this.menuHamburger.Name = "menuHamburger";
-            this.menuHamburger.Size = new System.Drawing.Size(191, 126);
+            this.menuHamburger.Size = new System.Drawing.Size(220, 148);
             // 
             // menuShowPiano
             // 
             this.menuShowPiano.Name = "menuShowPiano";
-            this.menuShowPiano.Size = new System.Drawing.Size(190, 22);
+            this.menuShowPiano.Size = new System.Drawing.Size(219, 22);
             this.menuShowPiano.Text = "Show &piano...";
             this.menuShowPiano.Click += new System.EventHandler(this.menuShowPiano_Click);
             // 
             // menuTools
             // 
             this.menuTools.Name = "menuTools";
-            this.menuTools.Size = new System.Drawing.Size(190, 22);
+            this.menuTools.Size = new System.Drawing.Size(219, 22);
             this.menuTools.Text = "Show &message trace...";
             this.menuTools.Click += new System.EventHandler(this.menuTools_Click);
+            // 
+            // menuPerformances
+            // 
+            this.menuPerformances.Name = "menuPerformances";
+            this.menuPerformances.Size = new System.Drawing.Size(219, 22);
+            this.menuPerformances.Text = "Show performance library...";
+            this.menuPerformances.Click += new System.EventHandler(this.menuPerformances_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(216, 6);
             // 
             // menuSettings
             // 
             this.menuSettings.Name = "menuSettings";
-            this.menuSettings.Size = new System.Drawing.Size(190, 22);
+            this.menuSettings.Size = new System.Drawing.Size(219, 22);
             this.menuSettings.Text = "&Settings...";
             this.menuSettings.Click += new System.EventHandler(this.menuSettings_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(187, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
-            // helpToolStripMenuItem
+            // menuHelp
             // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showOverviewToolStripMenuItem,
-            this.keysToolStripMenuItem,
-            this.aboutMIDIJunctionToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.helpToolStripMenuItem.Text = "Help";
+            this.menuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuHelpOverview,
+            this.menuHelpKeys,
+            this.menuHelpAbout});
+            this.menuHelp.Name = "menuHelp";
+            this.menuHelp.Size = new System.Drawing.Size(219, 22);
+            this.menuHelp.Text = "Help";
             // 
-            // showOverviewToolStripMenuItem
+            // menuHelpOverview
             // 
-            this.showOverviewToolStripMenuItem.Name = "showOverviewToolStripMenuItem";
-            this.showOverviewToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.showOverviewToolStripMenuItem.Text = "Show &overview";
-            this.showOverviewToolStripMenuItem.Click += new System.EventHandler(this.showOverviewToolStripMenuItem_Click);
+            this.menuHelpOverview.Name = "menuHelpOverview";
+            this.menuHelpOverview.Size = new System.Drawing.Size(192, 22);
+            this.menuHelpOverview.Text = "Show &overview";
+            this.menuHelpOverview.Click += new System.EventHandler(this.menuHelpOverview_Click);
             // 
-            // keysToolStripMenuItem
+            // menuHelpKeys
             // 
-            this.keysToolStripMenuItem.Name = "keysToolStripMenuItem";
-            this.keysToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.keysToolStripMenuItem.Text = "Keys";
-            this.keysToolStripMenuItem.Click += new System.EventHandler(this.keysToolStripMenuItem_Click);
+            this.menuHelpKeys.Name = "menuHelpKeys";
+            this.menuHelpKeys.Size = new System.Drawing.Size(192, 22);
+            this.menuHelpKeys.Text = "Keys";
+            this.menuHelpKeys.Click += new System.EventHandler(this.menuHelpKeys_Click);
             // 
-            // aboutMIDIJunctionToolStripMenuItem
+            // menuHelpAbout
             // 
-            this.aboutMIDIJunctionToolStripMenuItem.Name = "aboutMIDIJunctionToolStripMenuItem";
-            this.aboutMIDIJunctionToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.aboutMIDIJunctionToolStripMenuItem.Text = "&About MIDI Junction...";
-            this.aboutMIDIJunctionToolStripMenuItem.Click += new System.EventHandler(this.aboutMIDIJunctionToolStripMenuItem_Click);
+            this.menuHelpAbout.Name = "menuHelpAbout";
+            this.menuHelpAbout.Size = new System.Drawing.Size(192, 22);
+            this.menuHelpAbout.Text = "&About MIDI Junction...";
+            this.menuHelpAbout.Click += new System.EventHandler(this.menuHelpAbout_Click);
             // 
             // menuClose
             // 
             this.menuClose.Name = "menuClose";
-            this.menuClose.Size = new System.Drawing.Size(190, 22);
+            this.menuClose.Size = new System.Drawing.Size(219, 22);
             this.menuClose.Text = "E&xit";
             this.menuClose.Click += new System.EventHandler(this.menuClose_Click);
             // 
@@ -386,9 +395,9 @@ namespace MidiJunction.Forms
             this.labelChord.BackColor = System.Drawing.Color.Transparent;
             this.labelChord.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelChord.ForeColor = System.Drawing.Color.White;
-            this.labelChord.Location = new System.Drawing.Point(1204, 7);
+            this.labelChord.Location = new System.Drawing.Point(1186, 7);
             this.labelChord.Name = "labelChord";
-            this.labelChord.Size = new System.Drawing.Size(61, 30);
+            this.labelChord.Size = new System.Drawing.Size(79, 30);
             this.labelChord.TabIndex = 49;
             this.labelChord.Text = "Cmaj7";
             this.labelChord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -457,12 +466,13 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem menuClose;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showOverviewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutMIDIJunctionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem keysToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuHelp;
+        private System.Windows.Forms.ToolStripMenuItem menuHelpOverview;
+        private System.Windows.Forms.ToolStripMenuItem menuHelpAbout;
+        private System.Windows.Forms.ToolStripMenuItem menuHelpKeys;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelChord;
+        private System.Windows.Forms.ToolStripMenuItem menuPerformances;
     }
 }
 

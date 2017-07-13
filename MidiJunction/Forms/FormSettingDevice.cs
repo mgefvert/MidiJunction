@@ -7,8 +7,8 @@ namespace MidiJunction.Forms
     {
         public string DeviceName
         {
-            get { return textBox1.Text.Trim(); }
-            set { textBox1.Text = value; }
+            get => textBox1.Text.Trim();
+            set => textBox1.Text = value;
         }
 
         public FormSettingDevice()

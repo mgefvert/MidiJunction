@@ -86,6 +86,7 @@ namespace MidiJunction.Forms
             _config.InputDevice = inputDevice.Text.Trim();
             _config.ControlOnAllChannels = checkBox1.Checked;
             _config.LowKeysControlHotKeys = checkBox2.Checked;
+            _config.UseSecondaryMonitor = checkBox3.Checked;
             _config.OutputDevices.Clear();
             _config.OutputDevices.AddRange(_devices);
             _config.Save();
@@ -265,6 +266,7 @@ namespace MidiJunction.Forms
             inputDevice.Text = _config.InputDevice;
             checkBox1.Checked = _config.ControlOnAllChannels;
             checkBox2.Checked = _config.LowKeysControlHotKeys;
+            checkBox3.Checked = _config.UseSecondaryMonitor;
 
             inputDevice.Items.Clear();
             for (int i = 0; i < MidiDeviceManager.InDeviceCount; i++)

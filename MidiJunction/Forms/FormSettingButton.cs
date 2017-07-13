@@ -12,12 +12,9 @@ namespace MidiJunction.Forms
 
         public BreakType BreakType
         {
-            get
-            {
-                return radioBreakNewLine.Checked
-                    ? BreakType.NewLine
-                    : (radioBreakSeparator.Checked ? BreakType.Separator : BreakType.None);
-            }
+            get => radioBreakNewLine.Checked
+                ? BreakType.NewLine
+                : (radioBreakSeparator.Checked ? BreakType.Separator : BreakType.None);
             set
             {
                 switch (value)
