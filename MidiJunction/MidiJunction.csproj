@@ -53,6 +53,9 @@
     <Compile Include="Classes\NoteManager.cs" />
     <Compile Include="Configuration\ConfigPerformances.cs" />
     <Compile Include="Configuration\ConfigPerformance.cs" />
+    <Compile Include="Controls\RichTextLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Line.cs">
       <SubType>UserControl</SubType>
     </Compile>

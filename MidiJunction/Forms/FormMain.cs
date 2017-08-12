@@ -591,13 +591,13 @@ namespace MidiJunction.Forms
                 var performances = _config.Performances.Values
                     .Where(x => x.FKey != null)
                     .OrderBy(x => x.FKey)
-                    .Select(x => "F" + x.FKey + " " + x.Title)
-                    .Concat(new[] { "F12 Select" })
+                    .Select(x => $"F{x.FKey} {x.Title}")
                     .ToList();
 
-                label1.Text = string.Join("   ·   ", performances);
-                label1.Font = _regularFont;
-                label1.ForeColor = Color.DarkGray;
+                label1.Text = (performances.Any() ? string.Join("   ·   ", performances) : "No performances") +
+                           @"           [ F12 Select ]";
+                //label1.Font = _regularFont;
+                label1.ForeColor = Color.White;
                 label1.BackColor = Color.Transparent;
             }
         }
@@ -681,7 +681,8 @@ namespace MidiJunction.Forms
             timer1.Enabled = false;
             try
             {
-                var ticks = DateTime.Now.Millisecond;
+                var ticks = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond % 900;
+                var warnColor = ticks < 600 ? Color.Red : Color.Transparent;
 
                 var chord = NoteManager.CurrentChord();
                 if (chord != null)
@@ -700,13 +701,24 @@ namespace MidiJunction.Forms
                     control.Tick();
 
                 // Update volume indicator
-                var v = (int) _volume.GetVolume();
-                labelVolume.Text = v.ToString();
-                progressBar1.Value = v;
+                var currentVolume = _volume.CurrentVolume;
+                progressBar1.Value = currentVolume;
+
+                if (!_volume.Mute)
+                {
+                    var vt = _volume.TargetVolume;
+                    labelVolume.BackColor = Color.Transparent;
+                    labelVolume.Text = vt == null ? "\xE2C1 " + currentVolume : currentVolume + "/" + vt;
+                }
+                else
+                {
+                    labelVolume.BackColor = warnColor;
+                    labelVolume.Text = "MUTED";
+                }
 
                 // Update window focus indicator
                 var active = WinApi.GetForegroundWindow() == Handle;
-                focusLabel.BackColor = active ? Color.Chartreuse : (ticks < 400 ? Color.Red : Color.Gray);
+                focusLabel.BackColor = active ? Color.Chartreuse : warnColor;
 
                 // Update hot key indicator
                 if (_activeHotKeyTime < DateTime.Now)
@@ -732,9 +744,7 @@ namespace MidiJunction.Forms
                 }
 
                 midiInputBus.Title = MidiDeviceManager.InputDevice?.Name ?? _config.InputDevice;
-                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput
-                    ? Color.Transparent
-                    : (ticks < 700 ? Color.Red : Color.Transparent);
+                midiInputBus.TitleColor = MidiDeviceManager.ConnectedToInput ? Color.Transparent : warnColor;
             }
             catch
             {

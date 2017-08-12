@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using DotNetCommons;
 using NAudio.CoreAudioApi;
 
 namespace MidiJunction.Devices
@@ -10,7 +11,24 @@ namespace MidiJunction.Devices
         private readonly MMDevice _playbackDevice;
         private readonly Timer _timer;
 
-        public float? TargetVolume { get; set; }
+        public bool Mute => _playbackDevice.AudioEndpointVolume.Mute;
+        public int? TargetVolume { get; set; }
+
+        public int CurrentVolume
+        {
+            get
+            {
+                try
+                {
+                    return (int)Math.Round(_playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar * 100);
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+            set => _playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (value / 100.0f + 0.00001f).Limit(0, 1);
+        }
 
         public SystemVolume()
         {
@@ -31,55 +49,28 @@ namespace MidiJunction.Devices
             if (TargetVolume == null)
                 return;
 
-            var c = GetVolume();
-            var diff = TargetVolume.Value - c;
+            var current = CurrentVolume;
 
-            var change = Math.Min(2, Math.Abs(diff));
-            if (change < 0.1)
+            var diff = Math.Abs(TargetVolume.Value - current);
+            if (diff == 0)
             {
                 TargetVolume = null;
                 return;
             }
 
-            if (c > TargetVolume)
-                change = -change;
-
-            SetVolume(c + change);
-        }
-
-        public float GetVolume()
-        {
-            try
-            {
-                return _playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar * 100;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        public void SetVolume(float volume)
-        {
-            var v = volume / 100.0 + 0.00001;
-
-            if (v < 0.0)
-                v = 0.0;
-            if (v > 1.0)
-                v = 1.0;
-
-            _playbackDevice.AudioEndpointVolume.MasterVolumeLevelScalar = (float)v;
+            var change = (diff / 4).Limit(1, 10);
+            CurrentVolume = TargetVolume.Value < current ? current - change : current + change;
         }
 
         public void Increase10()
         {
-            var v = (int)(TargetVolume ?? GetVolume()) + 2;
+            var v = (TargetVolume ?? CurrentVolume) + 2;
             TargetVolume = Math.Min((v / 10 + 1) * 10, 100);
         }
 
         public void Decrease10()
         {
-            var v = (int)(TargetVolume ?? GetVolume()) + 2;
+            var v = (TargetVolume ?? CurrentVolume) + 2;
             TargetVolume = Math.Max((v / 10 - 1) * 10, 0);
         }
     }
