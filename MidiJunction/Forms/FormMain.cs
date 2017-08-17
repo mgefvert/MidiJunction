@@ -93,6 +93,27 @@ namespace MidiJunction.Forms
             RegisterAppBar();
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WinApi.WM_POWERBROADCAST)
+            {
+                switch ((int)m.WParam)
+                {
+                    case WinApi.PBT_APMRESUMEAUTOMATIC:
+                    case WinApi.PBT_APMRESUMESUSPEND:
+                        MidiDeviceManager.RescanInputDevice(_config.InputDevice, ChannelDeviceMessage);
+                        timer1.Enabled = true;
+                        break;
+
+                    case WinApi.PBT_APMSUSPEND:
+                        timer1.Enabled = false;
+                        break;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             MidiDeviceManager.Shutdown();
@@ -596,7 +617,7 @@ namespace MidiJunction.Forms
 
                 label1.Text = (performances.Any() ? string.Join("   ·   ", performances) : "No performances") +
                            @"           [ F12 Select ]";
-                //label1.Font = _regularFont;
+                label1.Font = _regularFont;
                 label1.ForeColor = Color.White;
                 label1.BackColor = Color.Transparent;
             }

@@ -39,6 +39,12 @@ namespace MidiJunction.Classes
         public const int WS_EX_LAYERED = 0x00080000;
         public const int WS_EX_TRANSPARENT = 0x00000020;
 
+        public const int PBT_APMPOWERSTATUSCHANGE = 0x0A;
+        public const int PBT_APMRESUMEAUTOMATIC = 0x12;
+        public const int PBT_APMRESUMESUSPEND = 0x07;
+        public const int PBT_APMSUSPEND = 0x04;
+
+
         public enum SPI
         {
             GETSCREENSAVEACTIVE = 0x0010
