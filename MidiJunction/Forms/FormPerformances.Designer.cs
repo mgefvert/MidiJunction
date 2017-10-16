@@ -53,7 +53,7 @@
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(508, 466);
-            this.listView1.TabIndex = 0;
+            this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.VirtualMode = true;
@@ -84,7 +84,7 @@
             this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(42, 15);
-            this.label1.TabIndex = 2;
+            this.label1.TabIndex = 0;
             this.label1.Text = "Search";
             // 
             // label2
@@ -92,9 +92,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 49);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(247, 15);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Select performance and press F-key to assign:";
+            this.label2.Size = new System.Drawing.Size(340, 15);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Select performance and press F-key to assign, or SPACE to clear";
             // 
             // buttonRename
             // 
@@ -102,7 +102,7 @@
             this.buttonRename.Location = new System.Drawing.Point(366, 548);
             this.buttonRename.Name = "buttonRename";
             this.buttonRename.Size = new System.Drawing.Size(75, 23);
-            this.buttonRename.TabIndex = 4;
+            this.buttonRename.TabIndex = 6;
             this.buttonRename.Text = "Rename";
             this.buttonRename.UseVisualStyleBackColor = true;
             this.buttonRename.Click += new System.EventHandler(this.button1_Click);
@@ -113,7 +113,7 @@
             this.buttonDelete.Location = new System.Drawing.Point(447, 548);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(75, 23);
-            this.buttonDelete.TabIndex = 5;
+            this.buttonDelete.TabIndex = 7;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.button2_Click);
@@ -124,7 +124,7 @@
             this.buttonClearFKey.Location = new System.Drawing.Point(15, 548);
             this.buttonClearFKey.Name = "buttonClearFKey";
             this.buttonClearFKey.Size = new System.Drawing.Size(94, 23);
-            this.buttonClearFKey.TabIndex = 6;
+            this.buttonClearFKey.TabIndex = 4;
             this.buttonClearFKey.Text = "Clear F-key";
             this.buttonClearFKey.UseVisualStyleBackColor = true;
             this.buttonClearFKey.Click += new System.EventHandler(this.buttonClearFKey_Click);
@@ -135,7 +135,7 @@
             this.buttonClearAll.Location = new System.Drawing.Point(115, 548);
             this.buttonClearAll.Name = "buttonClearAll";
             this.buttonClearAll.Size = new System.Drawing.Size(94, 23);
-            this.buttonClearAll.TabIndex = 7;
+            this.buttonClearAll.TabIndex = 5;
             this.buttonClearAll.Text = "Clear all";
             this.buttonClearAll.UseVisualStyleBackColor = true;
             this.buttonClearAll.Click += new System.EventHandler(this.buttonClearAll_Click);

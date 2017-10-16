@@ -19,6 +19,7 @@ namespace MidiJunction.Forms
             InitializeComponent();
             _config = config;
             _performances = performances;
+            _performances.Changed += (sender, args) => Filter(textBox1.Text);
         }
 
         private void Filter(string filter)
@@ -68,11 +69,7 @@ namespace MidiJunction.Forms
         private void FormPerformances_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 27)
-            {
-                textBox1.Text = "";
-                Filter(null);
-                ActiveControl = textBox1;
-            }
+                Close();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -122,15 +119,17 @@ namespace MidiJunction.Forms
             if (e.KeyCode >= Keys.F1 && e.KeyCode <= Keys.F11)
             {
                 var key = e.KeyCode - Keys.F1 + 1;
-
-                if (MessageBox.Show($"Bind F{key} to performance '{item.Title}'?",
-                        "Key assignment", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    return;
-
                 _performances.ClearPerformanceKey(e.KeyCode);
                 item.FKey = key;
                 _config.Save();
 
+                listView1.Refresh();
+            }
+
+            if (e.KeyCode == Keys.Space)
+            {
+                item.FKey = null;
+                _config.Save();
                 listView1.Refresh();
             }
         }
