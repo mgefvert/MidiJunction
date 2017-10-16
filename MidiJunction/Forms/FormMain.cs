@@ -555,7 +555,9 @@ namespace MidiJunction.Forms
                 if (string.IsNullOrEmpty(number))
                     return 0;
 
-                return !int.TryParse(s, out var n) ? 0 : Helper.Limit(n, 0, 3);
+                return int.TryParse(number, out var n)
+                    ? Helper.Limit(n, 0, 3)
+                    : 0;
             }
 
             // Reset all buttons
