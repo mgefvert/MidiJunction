@@ -31,6 +31,7 @@ namespace MidiJunction.Classes
             // Basic chords
             new Chord(2, "",       0, 4, 7),
             new Chord(2, "m",      0, 3, 7),
+            new Chord(2, "",       0, 7),
 
             // Seconds and fourths
             new Chord(3, "2",      0, 2),
@@ -38,9 +39,6 @@ namespace MidiJunction.Classes
             new Chord(3, "sus4",   0, 5),
             new Chord(3, "sus4",   0, 5, 7),
             new Chord(3, "2sus4",  0, 2, 5),
-
-            // Fifths
-            new Chord(4, "5",      0, 7),
 
             // Sevenths
             new Chord(5, "7",      0, 4, 7, 10),
@@ -55,16 +53,10 @@ namespace MidiJunction.Classes
             // Sixths
             new Chord(7, "6",      0, 4, 9),
             new Chord(7, "6",      0, 4, 7, 9),
+            new Chord(9, "6",      0, 9),
+            new Chord(9, "6",      0, 7, 9),
             new Chord(7, "m6",     0, 3, 9),
             new Chord(7, "m6",     0, 3, 7, 9),
-
-            // Just thirds
-            new Chord(8, "",       0, 4),
-            new Chord(8, "m",      0, 3),
-
-            // Sixths without thirds
-            new Chord(9, "6no3",   0, 9),
-            new Chord(9, "6no3",   0, 7, 9),
         };
 
         private static readonly SortedSet<int> Active = new SortedSet<int>();

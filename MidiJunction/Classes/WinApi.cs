@@ -34,6 +34,7 @@ namespace MidiJunction.Classes
         public const int ULW_COLORKEY = 1;
         public const int ULW_OPAQUE = 4;
         public const int WM_ACTIVATE = 0x0006;
+        public const int WM_DISPLAYCHANGE = 0x007E;
         public const int WM_POWERBROADCAST = 0x0218;
         public const int WM_HOTKEY = 0x0312;
         public const int WS_EX_LAYERED = 0x00080000;

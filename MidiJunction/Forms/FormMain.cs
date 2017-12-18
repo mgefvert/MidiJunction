@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -36,6 +37,7 @@ namespace MidiJunction.Forms
         private Keys? _activeHotKey;
         private DateTime _activeHotKeyTime;
         private DateTime _lastChordTime;
+        private int _transpose;
         private readonly List<int> _hotStandby = new List<int>();
 
         public int CurrentChannel => NoteManager.CurrentChannel;
@@ -75,6 +77,10 @@ namespace MidiJunction.Forms
                 new KeyMapEntry(Keys.Add, false, keys => _volume.Increase10()),
                 new KeyMapEntry(Keys.Subtract, false, keys => _volume.Decrease10()),
 
+                // Volume up/down
+                new KeyMapEntry(Keys.Up, false, keys => tranposeUp.PerformClick()),
+                new KeyMapEntry(Keys.Down, false, keys => transposeDown.PerformClick()),
+
                 // Send test note
                 new KeyMapEntry(Keys.Divide, false, keys => NotesSendTest()),
 
@@ -110,8 +116,32 @@ namespace MidiJunction.Forms
                         break;
                 }
             }
+            else if (m.Msg == WinApi.WM_DISPLAYCHANGE)
+            {
+                MonitorsChanged();
+            }
 
             base.WndProc(ref m);
+        }
+
+        private void MonitorsChanged()
+        {
+            // Very nasty hack. Screen.AllScreens is a static member initialized on first access, meaning in order to
+            // make it update in response to display changes, we have to un-initialize the hidden array.
+            var screenType = typeof(Screen);
+            var screenField = screenType.GetField("screens", BindingFlags.Static | BindingFlags.NonPublic);
+            if (screenField != null)
+                screenField.SetValue(null, null);
+
+            // Use secondary monitor?
+            if (Screen.AllScreens.Length > 1 && _config.UseSecondaryMonitor)
+            {
+                var monitor = Screen.AllScreens.First(s => !s.Primary).Bounds;
+                _formSecondary.Show();
+                _formSecondary.SetBounds(monitor.X, monitor.Y, monitor.Width, monitor.Height, BoundsSpecified.All);
+            }
+            else
+                _formSecondary.Hide();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -253,16 +283,7 @@ namespace MidiJunction.Forms
                 ChannelSetCurrent(_config.DefaultChannel);
 
                 ButtonsRecolor();
-
-                // Use secondary monitor?
-                if (Screen.AllScreens.Length > 1 && _config.UseSecondaryMonitor)
-                {
-                    var monitor = Screen.AllScreens.First(s => !s.Primary).Bounds;
-                    _formSecondary.Show();
-                    _formSecondary.SetBounds(monitor.X, monitor.Y, monitor.Width, monitor.Height, BoundsSpecified.All);
-                }
-                else
-                    _formSecondary.Hide();
+                MonitorsChanged();
             }
             finally
             {
@@ -345,6 +366,7 @@ namespace MidiJunction.Forms
             // Start by outputting the data - as low latency as possible
             if (msg.Channel == CurrentChannel)
             {
+                // Check if it's a performance switch message - before transposing
                 if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && msg.Data1 >= 21 && msg.Data1 <= 24)
                 {
                     if (!msg.IsNoteOnMessage)
@@ -352,6 +374,16 @@ namespace MidiJunction.Forms
 
                     StandbyPerformSwitch(msg.Data1 - 21);
                     return;
+                }
+
+                // Apply transposing
+                if (msg.IsNoteMessage && _transpose != 0)
+                {
+                    var newNote = msg.Data1 + _transpose;
+                    if (newNote < 1 || newNote > 127)
+                        return;
+
+                    msg.Data1 = (byte)newNote;
                 }
 
                 if (msg.IsNoteOnMessage)
@@ -751,6 +783,18 @@ namespace MidiJunction.Forms
                     PerformancesUpdate();
                 }
 
+                // Upate transpose feature
+                if (_transpose == 0)
+                {
+                    labelTranspose.Text = "-";
+                    labelTranspose.BackColor = Color.Transparent;
+                }
+                else
+                {
+                    labelTranspose.Text = (_transpose > 0 ? "+" : "-") + Math.Abs(_transpose);
+                    labelTranspose.BackColor = ticks < 200 ? Color.Chartreuse : Color.Transparent;
+                }
+
                 // Only do this every 1/4 second
                 var time = DateTime.Now.Millisecond / 250;
                 if (_lastTime != time)
@@ -777,6 +821,27 @@ namespace MidiJunction.Forms
             {
                 timer1.Enabled = true;
             }
+        }
+
+        private void tranposeUp_Click(object sender, EventArgs e)
+        {
+            _transpose = Math.Min(99, _transpose + 1);
+        }
+
+        private void transposeDown_Click(object sender, EventArgs e)
+        {
+            _transpose = Math.Max(-99, _transpose - 1);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Up || keyData == Keys.Down)
+            {
+                FormMain_KeyDown(this, new KeyEventArgs(keyData));
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

@@ -48,21 +48,21 @@
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1090, 709);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1024, 768);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // labelChord
             // 
             this.labelChord.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.labelChord.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelChord.Font = new System.Drawing.Font("Segoe UI", 128F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelChord.Font = new System.Drawing.Font("Segoe UI", 72F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelChord.ForeColor = System.Drawing.Color.Lime;
-            this.labelChord.Location = new System.Drawing.Point(545, 0);
+            this.labelChord.Location = new System.Drawing.Point(512, 0);
             this.labelChord.Margin = new System.Windows.Forms.Padding(0);
             this.labelChord.Name = "labelChord";
-            this.labelChord.Size = new System.Drawing.Size(545, 709);
+            this.labelChord.Size = new System.Drawing.Size(512, 768);
             this.labelChord.TabIndex = 3;
-            this.labelChord.Text = "label1";
+            this.labelChord.Text = "C#4maj7";
             this.labelChord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelDevices
@@ -74,7 +74,7 @@
             this.labelDevices.Location = new System.Drawing.Point(0, 0);
             this.labelDevices.Margin = new System.Windows.Forms.Padding(0);
             this.labelDevices.Name = "labelDevices";
-            this.labelDevices.Size = new System.Drawing.Size(545, 709);
+            this.labelDevices.Size = new System.Drawing.Size(512, 768);
             this.labelDevices.TabIndex = 2;
             this.labelDevices.Text = "label2";
             this.labelDevices.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -84,7 +84,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.ClientSize = new System.Drawing.Size(1090, 709);
+            this.ClientSize = new System.Drawing.Size(1024, 768);
             this.Controls.Add(this.tableLayoutPanel1);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

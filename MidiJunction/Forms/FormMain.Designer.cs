@@ -61,6 +61,17 @@ namespace MidiJunction.Forms
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
             this.labelChord = new System.Windows.Forms.Label();
+            this.labelTranspose = new System.Windows.Forms.Label();
+            this.transposeDown = new System.Windows.Forms.Button();
+            this.tranposeUp = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.flowButtonPanel.SuspendLayout();
             this.flowOutputDevicesPanel.SuspendLayout();
             this.menuHamburger.SuspendLayout();
@@ -118,9 +129,9 @@ namespace MidiJunction.Forms
             this.flowButtonPanel.Controls.Add(this.button1);
             this.flowButtonPanel.Controls.Add(this.button2);
             this.flowButtonPanel.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flowButtonPanel.Location = new System.Drawing.Point(311, 9);
+            this.flowButtonPanel.Location = new System.Drawing.Point(311, 17);
             this.flowButtonPanel.Name = "flowButtonPanel";
-            this.flowButtonPanel.Size = new System.Drawing.Size(601, 59);
+            this.flowButtonPanel.Size = new System.Drawing.Size(553, 60);
             this.flowButtonPanel.TabIndex = 22;
             // 
             // focusLabel
@@ -128,9 +139,9 @@ namespace MidiJunction.Forms
             this.focusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.focusLabel.BackColor = System.Drawing.Color.Chartreuse;
-            this.focusLabel.Location = new System.Drawing.Point(14, 9);
+            this.focusLabel.Location = new System.Drawing.Point(14, 17);
             this.focusLabel.Name = "focusLabel";
-            this.focusLabel.Size = new System.Drawing.Size(19, 72);
+            this.focusLabel.Size = new System.Drawing.Size(19, 73);
             this.focusLabel.TabIndex = 28;
             this.focusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -139,7 +150,7 @@ namespace MidiJunction.Forms
             this.labelCurrentChannel.BackColor = System.Drawing.Color.Transparent;
             this.labelCurrentChannel.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelCurrentChannel.ForeColor = System.Drawing.Color.White;
-            this.labelCurrentChannel.Location = new System.Drawing.Point(183, 9);
+            this.labelCurrentChannel.Location = new System.Drawing.Point(183, 17);
             this.labelCurrentChannel.Margin = new System.Windows.Forms.Padding(0);
             this.labelCurrentChannel.Name = "labelCurrentChannel";
             this.labelCurrentChannel.Size = new System.Drawing.Size(55, 47);
@@ -154,7 +165,7 @@ namespace MidiJunction.Forms
             this.midiLeft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.midiLeft.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.midiLeft.ForeColor = System.Drawing.Color.White;
-            this.midiLeft.Location = new System.Drawing.Point(190, 61);
+            this.midiLeft.Location = new System.Drawing.Point(190, 69);
             this.midiLeft.Name = "midiLeft";
             this.midiLeft.Size = new System.Drawing.Size(19, 22);
             this.midiLeft.TabIndex = 30;
@@ -170,7 +181,7 @@ namespace MidiJunction.Forms
             this.midiRight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.midiRight.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.midiRight.ForeColor = System.Drawing.Color.White;
-            this.midiRight.Location = new System.Drawing.Point(210, 61);
+            this.midiRight.Location = new System.Drawing.Point(210, 69);
             this.midiRight.Name = "midiRight";
             this.midiRight.Size = new System.Drawing.Size(19, 22);
             this.midiRight.TabIndex = 31;
@@ -185,7 +196,7 @@ namespace MidiJunction.Forms
             this.labelVolume.BackColor = System.Drawing.Color.Transparent;
             this.labelVolume.Font = new System.Drawing.Font("Segoe UI Symbol", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelVolume.ForeColor = System.Drawing.Color.White;
-            this.labelVolume.Location = new System.Drawing.Point(1219, 40);
+            this.labelVolume.Location = new System.Drawing.Point(1219, 49);
             this.labelVolume.Name = "labelVolume";
             this.labelVolume.Size = new System.Drawing.Size(80, 28);
             this.labelVolume.TabIndex = 32;
@@ -214,10 +225,10 @@ namespace MidiJunction.Forms
             this.midiInputBus.BackColor = System.Drawing.Color.Transparent;
             this.midiInputBus.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.midiInputBus.ForeColor = System.Drawing.Color.White;
-            this.midiInputBus.Location = new System.Drawing.Point(39, 9);
+            this.midiInputBus.Location = new System.Drawing.Point(39, 17);
             this.midiInputBus.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.midiInputBus.Name = "midiInputBus";
-            this.midiInputBus.Size = new System.Drawing.Size(129, 72);
+            this.midiInputBus.Size = new System.Drawing.Size(129, 73);
             this.midiInputBus.TabIndex = 45;
             this.midiInputBus.Title = "MIDI Input";
             this.midiInputBus.TitleColor = System.Drawing.Color.Empty;
@@ -229,9 +240,9 @@ namespace MidiJunction.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.flowOutputDevicesPanel.BackColor = System.Drawing.Color.Transparent;
             this.flowOutputDevicesPanel.Controls.Add(this.midiBus1);
-            this.flowOutputDevicesPanel.Location = new System.Drawing.Point(980, 9);
+            this.flowOutputDevicesPanel.Location = new System.Drawing.Point(980, 17);
             this.flowOutputDevicesPanel.Name = "flowOutputDevicesPanel";
-            this.flowOutputDevicesPanel.Size = new System.Drawing.Size(200, 72);
+            this.flowOutputDevicesPanel.Size = new System.Drawing.Size(200, 73);
             this.flowOutputDevicesPanel.TabIndex = 46;
             // 
             // label4
@@ -240,7 +251,7 @@ namespace MidiJunction.Forms
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Wingdings", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label4.Location = new System.Drawing.Point(921, 9);
+            this.label4.Location = new System.Drawing.Point(924, 17);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(51, 74);
             this.label4.TabIndex = 27;
@@ -252,7 +263,7 @@ namespace MidiJunction.Forms
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Wingdings", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label3.Location = new System.Drawing.Point(253, 12);
+            this.label3.Location = new System.Drawing.Point(253, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(52, 74);
             this.label3.TabIndex = 20;
@@ -267,7 +278,7 @@ namespace MidiJunction.Forms
             this.button3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Image = global::MidiJunction.Properties.Resources.hamburger_icon;
-            this.button3.Location = new System.Drawing.Point(1271, 4);
+            this.button3.Location = new System.Drawing.Point(1271, 14);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(29, 33);
             this.button3.TabIndex = 47;
@@ -368,7 +379,7 @@ namespace MidiJunction.Forms
             // progressBar1
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(1219, 68);
+            this.progressBar1.Location = new System.Drawing.Point(1219, 77);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(0);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(80, 10);
@@ -382,9 +393,9 @@ namespace MidiJunction.Forms
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkGray;
-            this.label1.Location = new System.Drawing.Point(314, 70);
+            this.label1.Location = new System.Drawing.Point(314, 79);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(621, 16);
+            this.label1.Size = new System.Drawing.Size(550, 16);
             this.label1.TabIndex = 48;
             this.label1.Text = "label1";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -395,12 +406,160 @@ namespace MidiJunction.Forms
             this.labelChord.BackColor = System.Drawing.Color.Transparent;
             this.labelChord.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelChord.ForeColor = System.Drawing.Color.White;
-            this.labelChord.Location = new System.Drawing.Point(1186, 7);
+            this.labelChord.Location = new System.Drawing.Point(1186, 16);
             this.labelChord.Name = "labelChord";
             this.labelChord.Size = new System.Drawing.Size(79, 30);
             this.labelChord.TabIndex = 49;
-            this.labelChord.Text = "Cmaj7";
+            this.labelChord.Text = "C#4maj7";
             this.labelChord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelTranspose
+            // 
+            this.labelTranspose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelTranspose.BackColor = System.Drawing.Color.Transparent;
+            this.labelTranspose.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTranspose.ForeColor = System.Drawing.Color.White;
+            this.labelTranspose.Location = new System.Drawing.Point(867, 17);
+            this.labelTranspose.Margin = new System.Windows.Forms.Padding(0);
+            this.labelTranspose.Name = "labelTranspose";
+            this.labelTranspose.Size = new System.Drawing.Size(55, 49);
+            this.labelTranspose.TabIndex = 50;
+            this.labelTranspose.Text = "+20";
+            this.labelTranspose.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // transposeDown
+            // 
+            this.transposeDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.transposeDown.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.transposeDown.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
+            this.transposeDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.transposeDown.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.transposeDown.ForeColor = System.Drawing.Color.White;
+            this.transposeDown.Location = new System.Drawing.Point(894, 69);
+            this.transposeDown.Name = "transposeDown";
+            this.transposeDown.Size = new System.Drawing.Size(19, 22);
+            this.transposeDown.TabIndex = 52;
+            this.transposeDown.TabStop = false;
+            this.transposeDown.Text = "q";
+            this.transposeDown.UseVisualStyleBackColor = true;
+            this.transposeDown.Click += new System.EventHandler(this.transposeDown_Click);
+            // 
+            // tranposeUp
+            // 
+            this.tranposeUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tranposeUp.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.tranposeUp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
+            this.tranposeUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.tranposeUp.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.tranposeUp.ForeColor = System.Drawing.Color.White;
+            this.tranposeUp.Location = new System.Drawing.Point(874, 69);
+            this.tranposeUp.Name = "tranposeUp";
+            this.tranposeUp.Size = new System.Drawing.Size(19, 22);
+            this.tranposeUp.TabIndex = 51;
+            this.tranposeUp.TabStop = false;
+            this.tranposeUp.Text = "p";
+            this.tranposeUp.UseVisualStyleBackColor = true;
+            this.tranposeUp.Click += new System.EventHandler(this.tranposeUp_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.Gray;
+            this.label2.Location = new System.Drawing.Point(10, 4);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(30, 11);
+            this.label2.TabIndex = 53;
+            this.label2.Text = "FOCUS";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.Gray;
+            this.label5.Location = new System.Drawing.Point(79, 4);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(46, 11);
+            this.label5.TabIndex = 54;
+            this.label5.Text = "MIDI INPUT";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.Gray;
+            this.label6.Location = new System.Drawing.Point(189, 4);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 11);
+            this.label6.TabIndex = 55;
+            this.label6.Text = "CHANNEL";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.Gray;
+            this.label7.Location = new System.Drawing.Point(315, 4);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(101, 11);
+            this.label7.TabIndex = 56;
+            this.label7.Text = "PERFORMANCE SELECTION";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.Gray;
+            this.label8.Location = new System.Drawing.Point(870, 4);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(47, 11);
+            this.label8.TabIndex = 57;
+            this.label8.Text = "TRANSPOSE";
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.Gray;
+            this.label9.Location = new System.Drawing.Point(1054, 4);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(54, 11);
+            this.label9.TabIndex = 58;
+            this.label9.Text = "MIDI OUTPUT";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Gray;
+            this.label10.Location = new System.Drawing.Point(1262, 4);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(37, 11);
+            this.label10.TabIndex = 59;
+            this.label10.Text = "VOLUME";
+            // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Gray;
+            this.label11.Location = new System.Drawing.Point(1209, 4);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(33, 11);
+            this.label11.TabIndex = 60;
+            this.label11.Text = "CHORD";
             // 
             // FormMain
             // 
@@ -408,7 +567,18 @@ namespace MidiJunction.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.BackgroundImage = global::MidiJunction.Properties.Resources.BackgroundImage;
-            this.ClientSize = new System.Drawing.Size(1307, 90);
+            this.ClientSize = new System.Drawing.Size(1307, 101);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.transposeDown);
+            this.Controls.Add(this.tranposeUp);
+            this.Controls.Add(this.labelTranspose);
             this.Controls.Add(this.labelChord);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.progressBar1);
@@ -439,6 +609,7 @@ namespace MidiJunction.Forms
             this.flowOutputDevicesPanel.ResumeLayout(false);
             this.menuHamburger.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -473,6 +644,17 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelChord;
         private System.Windows.Forms.ToolStripMenuItem menuPerformances;
+        private System.Windows.Forms.Label labelTranspose;
+        private System.Windows.Forms.Button transposeDown;
+        private System.Windows.Forms.Button tranposeUp;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
     }
 }
 
