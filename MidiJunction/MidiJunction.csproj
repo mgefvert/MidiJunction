@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MidiJunction</RootNamespace>
     <AssemblyName>MidiJunction</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -232,8 +232,8 @@
     <Content Include="Images\piano.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DotNetCommons\DotNetCommons\DotNetCommons.csproj">
-      <Project>{A86D8B8B-D601-4EB9-AA0A-E03372ACC104}</Project>
+    <ProjectReference Include="..\..\DotNetCommons\src\DotNetCommons\DotNetCommons.csproj">
+      <Project>{2bd2d8a1-cbee-4659-b7fe-535d8b412e04}</Project>
       <Name>DotNetCommons</Name>
     </ProjectReference>
   </ItemGroup>

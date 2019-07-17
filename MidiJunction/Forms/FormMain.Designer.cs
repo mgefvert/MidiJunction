@@ -63,7 +63,7 @@ namespace MidiJunction.Forms
             this.labelChord = new System.Windows.Forms.Label();
             this.labelTranspose = new System.Windows.Forms.Label();
             this.transposeDown = new System.Windows.Forms.Button();
-            this.tranposeUp = new System.Windows.Forms.Button();
+            this.transposeUp = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -444,22 +444,22 @@ namespace MidiJunction.Forms
             this.transposeDown.UseVisualStyleBackColor = true;
             this.transposeDown.Click += new System.EventHandler(this.transposeDown_Click);
             // 
-            // tranposeUp
+            // transposeUp
             // 
-            this.tranposeUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tranposeUp.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.tranposeUp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
-            this.tranposeUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tranposeUp.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.tranposeUp.ForeColor = System.Drawing.Color.White;
-            this.tranposeUp.Location = new System.Drawing.Point(874, 69);
-            this.tranposeUp.Name = "tranposeUp";
-            this.tranposeUp.Size = new System.Drawing.Size(19, 22);
-            this.tranposeUp.TabIndex = 51;
-            this.tranposeUp.TabStop = false;
-            this.tranposeUp.Text = "p";
-            this.tranposeUp.UseVisualStyleBackColor = true;
-            this.tranposeUp.Click += new System.EventHandler(this.tranposeUp_Click);
+            this.transposeUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.transposeUp.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.transposeUp.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DodgerBlue;
+            this.transposeUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.transposeUp.Font = new System.Drawing.Font("Wingdings 3", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+            this.transposeUp.ForeColor = System.Drawing.Color.White;
+            this.transposeUp.Location = new System.Drawing.Point(874, 69);
+            this.transposeUp.Name = "transposeUp";
+            this.transposeUp.Size = new System.Drawing.Size(19, 22);
+            this.transposeUp.TabIndex = 51;
+            this.transposeUp.TabStop = false;
+            this.transposeUp.Text = "p";
+            this.transposeUp.UseVisualStyleBackColor = true;
+            this.transposeUp.Click += new System.EventHandler(this.transposeUp_Click);
             // 
             // label2
             // 
@@ -577,7 +577,7 @@ namespace MidiJunction.Forms
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.transposeDown);
-            this.Controls.Add(this.tranposeUp);
+            this.Controls.Add(this.transposeUp);
             this.Controls.Add(this.labelTranspose);
             this.Controls.Add(this.labelChord);
             this.Controls.Add(this.label1);
@@ -646,7 +646,7 @@ namespace MidiJunction.Forms
         private System.Windows.Forms.ToolStripMenuItem menuPerformances;
         private System.Windows.Forms.Label labelTranspose;
         private System.Windows.Forms.Button transposeDown;
-        private System.Windows.Forms.Button tranposeUp;
+        private System.Windows.Forms.Button transposeUp;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using MidiJunction.Classes;
 
 namespace MidiJunction.Devices
@@ -7,6 +6,8 @@ namespace MidiJunction.Devices
     public class MidiDeviceIn : MidiDevice
     {
         private readonly IntPtr _handle;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly WinMM.MidiCallback _callback;
 
         internal MidiDeviceIn(int device) : base(device, MidiDeviceManager.InDeviceInfo(device).szPname)

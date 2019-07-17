@@ -78,7 +78,7 @@ namespace MidiJunction.Forms
                 new KeyMapEntry(Keys.Subtract, false, keys => _volume.Decrease10()),
 
                 // Volume up/down
-                new KeyMapEntry(Keys.Up, false, keys => tranposeUp.PerformClick()),
+                new KeyMapEntry(Keys.Up, false, keys => transposeUp.PerformClick()),
                 new KeyMapEntry(Keys.Down, false, keys => transposeDown.PerformClick()),
 
                 // Send test note
@@ -87,7 +87,7 @@ namespace MidiJunction.Forms
                 // Function keys for loading and saving performances
                 new KeyMapEntry(Keys.F1, Keys.F11, false, PerformancesSelect),
                 new KeyMapEntry(Keys.F1, Keys.F11, true, PerformancesSave),
-                new KeyMapEntry(Keys.F12, false, PerformancesView), 
+                new KeyMapEntry(Keys.F12, false, PerformancesView),
 
                 // A-Z, 0-9 keys for switching instruments
                 new KeyMapEntry(Keys.A, Keys.Z, false, keys => _buttons.FirstOrDefault(x => x.Key == keys)?.Click()),
@@ -376,6 +376,20 @@ namespace MidiJunction.Forms
                     return;
                 }
 
+                // Check if it's a transposing switch message - before transposing
+                if (_config.LowKeysControlHotKeys && msg.IsNoteMessage && (msg.Data1 == 107 || msg.Data1 == 108))
+                {
+                    if (!msg.IsNoteOnMessage)
+                        return;
+
+                    if (msg.Data1 == 107)
+                        transposeDown_Click(this, EventArgs.Empty);
+                    else if (msg.Data1 == 108)
+                        transposeUp_Click(this, EventArgs.Empty);
+
+                    return;
+                }
+
                 // Apply transposing
                 if (msg.IsNoteMessage && _transpose != 0)
                 {
@@ -501,7 +515,7 @@ namespace MidiJunction.Forms
                 "Shift F1-F11\tSave current instruments as performance",
                 "F12\t\tDisplay performances window"
             };
-            
+
             MessageBox.Show(string.Join("\r\n", msg), "Keys", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -710,7 +724,7 @@ namespace MidiJunction.Forms
             var maxStandbyLevel = _buttons.Max(x => x.HotStandby);
             var maxStandbyCount = _buttons.Count(x => x.HotStandby == maxStandbyLevel);
 
-            // Less than maximum? 
+            // Less than maximum?
             if (info.HotStandby < maxStandbyLevel)
             {
                 info.HotStandby++;
@@ -823,14 +837,16 @@ namespace MidiJunction.Forms
             }
         }
 
-        private void tranposeUp_Click(object sender, EventArgs e)
+        private void transposeUp_Click(object sender, EventArgs e)
         {
             _transpose = Math.Min(99, _transpose + 1);
+            NoteManager.TurnAllNotesOff();
         }
 
         private void transposeDown_Click(object sender, EventArgs e)
         {
             _transpose = Math.Max(-99, _transpose - 1);
+            NoteManager.TurnAllNotesOff();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
